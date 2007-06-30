@@ -7,7 +7,7 @@ INSTALL_PREFIX = '/usr'
 
 # Setup function from distutils
 setup(
-	name = 'compiz-fusion-icon',
+	name = 'fusion-icon',
 	version = '0.1',
 	author = 'crdlb (Christopher Williams)',
 	author_email = 'christopherw@verizon.net',

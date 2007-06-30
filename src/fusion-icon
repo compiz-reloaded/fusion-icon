@@ -28,6 +28,19 @@ def default_decorator():
 		decorator = ''
 	return decorator
 
+def create_config_file():
+        default_config = open(config_file, 'w')
+        default_config.write('# Config file for fusion-icon\n')
+        default_config.write('\n')
+        default_config.write('[window_manager]\n')
+        default_config.write('active_wm = compiz\n')
+        default_config.write('\n')
+        default_config.write('[compiz_options]\n')
+        default_config.write('fast_filter = \n')
+        default_config.write('indirect_rendering = \n')
+        default_config.write('loose_binding = \n') 
+        default_config.close()
+
 def fallback_wm():
 	if installed('kwin') and kde and not gnome:
 		configuration.set('window_manager', 'active_wm', 'kwin')
@@ -256,11 +269,14 @@ config_folder = environ.get('XDG_CONFIG_HOME', path.join(home, '.config'))
 config_file = path.join(config_folder, 'fusion-icon')
 pixmap_dir = '/usr/share/pixmaps'
 
-# Home directory related stuffs
+# Configuration file setup
 if not path.exists(config_folder):
 	mkdir(config_folder)
+	create_config_file()
+elif not path.exists(config_file):
+	create_config_file()
 
-# Retrieve configuration from compiz-fusion-icon.conf
+# Retrieve configuration from ~/.config/fusion-icon
 configuration = ConfigParser.ConfigParser()
 configuration.read(config_file)
 active_wm = configuration.get('window_manager', 'active_wm')
