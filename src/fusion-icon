@@ -258,7 +258,7 @@ decosetting = compizconfig.Setting(decoplugin, 'command', 0)
 
 # Get installed applications
 app_is_installed = []
-apps = ('compiz.real', 'compiz' , 'ccsm' , 'gtk-window-decorator', 'kde-window-decorator', 'emerald' , 'metacity' , 'kwin') 
+apps = ('compiz.real', 'compiz' , 'ccsm' , 'gtk-window-decorator', 'kde-window-decorator', 'emerald' , 'metacity' , 'kwin', 'xfwm4') 
 for application in apps:
 	if system('which ' + application) == 0:
 		app_is_installed.append(application)
