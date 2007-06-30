@@ -17,8 +17,8 @@ setup(
 	# Files that needs to be installed
 	data_files = [
 		(INSTALL_PREFIX + '/bin',
-			['src/compiz-fusion-icon']),
+			['src/fusion-icon']),
 		(INSTALL_PREFIX + '/share/pixmaps',
-			['cf-icon.svg']),
+			['fusion-icon.svg']),
 		     ]
 )

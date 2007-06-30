@@ -253,7 +253,7 @@ active_decorator = get_decorator()
 # Variables
 home = environ.get('HOME')
 config_folder = environ.get('XDG_CONFIG_HOME', path.join(home, '.config'))  
-config_file = path.join(config_folder, 'cf-icon')
+config_file = path.join(config_folder, 'fusion-icon')
 pixmap_dir = '/usr/share/pixmaps'
 
 # Home directory related stuffs
@@ -395,8 +395,8 @@ item.connect('activate', quit_menu_activate)
 menu.append(item)
 menu.show_all()
 
-# Compiz-Manager Tray Icon
-pixbuf = gtk.gdk.pixbuf_new_from_file(path.join(pixmap_dir, 'cf-icon.svg'))
+# Compiz Fusion Icon
+pixbuf = gtk.gdk.pixbuf_new_from_file(path.join(pixmap_dir, 'fusion-icon.svg'))
 icon = gtk.StatusIcon()
 icon.set_from_pixbuf(pixbuf)
 icon.set_tooltip('Compiz Fusion Icon')
@@ -405,5 +405,5 @@ icon.connect('popup-menu', popup_menu, menu)
 initialized = True
 #start a WM
 pre_start_wm()
-# Compiz-Manager Main
+# Compiz Fusion Icon Main
 gtk.main()
