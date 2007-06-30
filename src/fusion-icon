@@ -103,8 +103,7 @@ def start_compiz():
 		decoplugin.Enabled = True
 		decoplugin.Update()
 		context.Write()
-	
-	sleep(2)
+	#sleep(2)
 	run_compiz = env_variables + compiz + ' --replace --sm-disable --ignore-desktop-hints ccp ' + fast_filter + ' ' + indirect_rendering + ' ' + loose_binding
 	print run_compiz
 	Popen(run_compiz, shell=True)
@@ -216,7 +215,7 @@ def emerald_menu_activate(widget):
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
-			sleep(1)
+			#sleep(1)
 		set_decorator('emerald --replace')
 
 def kwd_menu_activate(widget):
@@ -225,7 +224,7 @@ def kwd_menu_activate(widget):
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
-			sleep(1)
+			#sleep(1)
 		set_decorator('kde-window-decorator --replace')
 		
 def gwd_menu_activate(widget): 
@@ -234,7 +233,7 @@ def gwd_menu_activate(widget):
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
-			sleep(1)
+			#sleep(1)
 		set_decorator('gtk-window-decorator --replace')
 
 def quit_menu_activate(widget):
