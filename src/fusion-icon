@@ -13,19 +13,19 @@ def installed(app):
 	return app in app_is_installed
 
 def default_decorator():
-	global decorator
 	if installed('kde-window-decorator') and kde and not gnome:
-		decorator = 'kde-window-decorator'
+		decorator = 'kde-window-decorator --replace'
 	elif installed('gtk-window-decorator') and gnome and not kde:
-		decorator = 'gtk-window-decorator'
+		decorator = 'gtk-window-decorator --replace'
 	elif  installed('emerald'):
-		decorator = 'emerald'
+		decorator = 'emerald --replace'
 	elif installed('gtk-window-decorator'):
-		decorator = 'gtk-window-decorator'	
+		decorator = 'gtk-window-decorator --replace'	
 	elif installed('kde-window-decorator'):
-		decorator = 'kde-window-decorator'
+		decorator = 'kde-window-decorator --replace'
 	else:
 		decorator = ''
+	print '* choosing ', decorator, ' as default decorator'
 	return decorator
 
 def create_config_file():
@@ -103,6 +103,7 @@ def start_compiz():
 		decoplugin.Enabled = True
 		decoplugin.Update()
 		context.Write()
+	
 	sleep(2)
 	run_compiz = env_variables + compiz + ' --replace --sm-disable --ignore-desktop-hints ccp ' + fast_filter + ' ' + indirect_rendering + ' ' + loose_binding
 	print run_compiz
@@ -120,16 +121,19 @@ def pre_start_wm():
 		start_wm(active_wm)
 	
 def set_decorator(decorator):
-	if initialized:
+	if initialized or first_set:
 		context.ProcessEvents()
 		decosetting.Value = decorator
-		print "* setting decorator to", decosetting.Value	
+		print '* setting decorator to', decosetting.Value	
 		decoplugin.Update()
 		context.Write()
 		
 def get_decorator():
-	active_decorator = decosetting.Value
-	return active_decorator
+	if decosetting.Value != '':
+		decorator = decosetting.Value
+	else:
+		decorator = default_decorator()
+	return decorator
 	
 # Compiz-Manager Menu Functions
 def popup_menu(widget, button, time, data = None):
@@ -145,7 +149,7 @@ def etm_menu_activate(widget):
 
 def wm_activate(widget):
 	if initialized:
-		print "* reloading window manager..."
+		print '* reloading window manager...'
 		pre_start_wm()
 
 def compiz_menu_activate(widget):
@@ -153,7 +157,7 @@ def compiz_menu_activate(widget):
 	configuration.set('window_manager', 'active_wm', compiz)
 	configuration.write(open(config_file, 'w'))	
 	if initialized and compiz_wm.active:
-		print "* switching to Compiz..."
+		print '* switching to Compiz...'
 		pre_start_wm()
 	
 def kwin_menu_activate(widget):
@@ -161,7 +165,7 @@ def kwin_menu_activate(widget):
 	configuration.set('window_manager', 'active_wm', 'kwin')
 	configuration.write(open(config_file, 'w'))
 	if initialized and kwin_wm.active:
-		print "* switching to Kwin..."
+		print '* switching to Kwin...'
 		pre_start_wm()
 
 def metacity_menu_activate(widget):
@@ -169,7 +173,7 @@ def metacity_menu_activate(widget):
 	configuration.set('window_manager', 'active_wm', 'metacity')
 	configuration.write(open(config_file, 'w'))
 	if initialized and metacity_wm.active:
-		print "* switching to Metacity..."
+		print '* switching to Metacity...'
 		pre_start_wm()
 
 def option_ff_activate(widget):
@@ -208,7 +212,7 @@ def option_lb_activate(widget):
 def emerald_menu_activate(widget):
 	if initialized and emerald_decorator.active:
 		if active_wm == compiz and get_decorator() != 'emerald --replace':
-			#remove the "--replace" (and any other arguments)
+			#remove the '--replace' (and any other arguments)
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
@@ -237,6 +241,7 @@ def quit_menu_activate(widget):
 	gtk.main_quit()
 
 initialized = False
+first_set = False
 always_indirect = is_always_indirect()
 
 #Open CompizConfig context
@@ -258,10 +263,15 @@ elif installed('compiz'): compiz = 'compiz'
 
 # Check whether GNOME or KDE running
 kde = gnome = False
-if system('pgrep gnome-session') != 0: gnome = True
-if system('pgrep dcop') != 0: kde = True
+if system('pgrep gnome-session') == 0: gnome = True
+if system('pgrep dcop') == 0: kde = True
+
+print 'gnome is', gnome, ', kde is', kde
 
 active_decorator = get_decorator()
+first_set = True
+set_decorator(active_decorator)
+first_set = False
 
 # Variables
 home = environ.get('HOME')
@@ -291,6 +301,7 @@ compiz_wm.connect('activate', compiz_menu_activate)
 if active_wm == compiz:
 	compiz_wm.set_active(True)
 if compiz == '':
+	compiz_wm.set_active(False)
 	compiz_wm.set_sensitive(False)
 wm_menu.append(compiz_wm)
 kwin_wm = gtk.RadioMenuItem(label=' Kwin')
@@ -299,6 +310,7 @@ kwin_wm.connect('activate', kwin_menu_activate)
 if active_wm == 'kwin':
 	kwin_wm.set_active(True)
 if not installed('kwin'):
+	kwin_wm.set_active(False)
 	kwin_wm.set_sensitive(False)
 wm_menu.append(kwin_wm)
 metacity_wm = gtk.RadioMenuItem(label=' Metacity')
@@ -306,7 +318,8 @@ metacity_wm.set_group(compiz_wm)
 metacity_wm.connect('activate', metacity_menu_activate)
 if active_wm == 'metacity':
 	metacity_wm.set_active(True)
-if not installed('metacity'):
+if not installed('metacity'):	
+	metacity_wm.set_active(False)
 	metacity_wm.set_sensitive(False)
 wm_menu.append(metacity_wm)
 
@@ -338,6 +351,7 @@ emerald_decorator.connect('activate', emerald_menu_activate)
 if active_decorator == 'emerald --replace':
 	emerald_decorator.set_active(True)
 if not installed('emerald'):
+	emerald_decorator.set_active(False)
 	emerald_decorator.set_sensitive(False)
 decorator_menu.append(emerald_decorator)
 
@@ -347,6 +361,7 @@ gwd_decorator.connect('activate', gwd_menu_activate)
 if active_decorator == 'gtk-window-decorator --replace':
 	gwd_decorator.set_active(True)
 if not installed('gtk-window-decorator'):
+	gwd_decorator.set_active(False)
 	gwd_decorator.set_sensitive(False)
 decorator_menu.append(gwd_decorator)
 
@@ -356,6 +371,7 @@ kwd_decorator.connect('activate', kwd_menu_activate)
 if active_decorator == 'kde-window-decorator --replace':
 	kwd_decorator.set_active(True)
 if not installed('kde-window-decorator'):
+	kwd_decorator.set_active(False)
 	kwd_decorator.set_sensitive(False)
 decorator_menu.append(kwd_decorator)
 
