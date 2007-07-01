@@ -19,6 +19,6 @@ setup(
 		(INSTALL_PREFIX + '/bin',
 			['src/fusion-icon']),
 		(INSTALL_PREFIX + '/share/pixmaps',
-			['fusion-icon.svg']),
+			['fusion-icon.png']),
 		     ]
 )

@@ -110,8 +110,6 @@ def start_compiz():
 
 def pre_start_wm():
 	active_wm = configuration.get('window_manager', 'active_wm')
-	print 'compiz is', compiz
-	print 'activewm is', active_wm
 	#make sure not to start compiz if not installed.
 	if compiz != '':
 		start_wm(active_wm)
@@ -223,7 +221,7 @@ def emerald_menu_activate(widget):
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
-			#sleep(1)
+			sleep(1)
 		set_decorator('emerald --replace')
 
 def kwd_menu_activate(widget):
@@ -232,7 +230,7 @@ def kwd_menu_activate(widget):
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
-			#sleep(1)
+			sleep(1)
 		set_decorator('kde-window-decorator --replace')
 		
 def gwd_menu_activate(widget): 
@@ -241,7 +239,7 @@ def gwd_menu_activate(widget):
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
-			#sleep(1)
+			sleep(1)
 		set_decorator('gtk-window-decorator --replace')
 
 def quit_menu_activate(widget):
@@ -439,7 +437,7 @@ menu.append(item)
 menu.show_all()
 
 # Compiz Fusion Icon
-pixbuf = gtk.gdk.pixbuf_new_from_file(path.join(pixmap_dir, 'fusion-icon.svg'))
+pixbuf = gtk.gdk.pixbuf_new_from_file(path.join(pixmap_dir, 'fusion-icon.png'))
 icon = gtk.StatusIcon()
 icon.set_from_pixbuf(pixbuf)
 icon.set_tooltip('Compiz Fusion Icon')
