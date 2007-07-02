@@ -108,8 +108,15 @@ def start_compiz():
 
 def pre_start_wm():
 	active_wm = configuration.get('window_manager', 'active_wm')
+<<<<<<< HEAD:src/fusion-icon
 	#make sure not to start set WM if not installed.
 	if installed(active_wm):
+=======
+	print 'compiz is', compiz
+	print 'activewm is', active_wm
+	#make sure not to start compiz if not installed.
+	if compiz != '':
+>>>>>>> 9ab2b59... Converted tray icon to png as from svg for better compatibility.:src/fusion-icon
 		start_wm(active_wm)
 	else:
 		fallback_wm()
@@ -220,8 +227,13 @@ def emerald_menu_activate(widget):
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
+<<<<<<< HEAD:src/fusion-icon
 			sleep(1)
 		set_decorator(emerald)
+=======
+			#sleep(1)
+		set_decorator('emerald --replace')
+>>>>>>> 9ab2b59... Converted tray icon to png as from svg for better compatibility.:src/fusion-icon
 
 def kwd_menu_activate(widget):
 	if initialized and kwd_decorator.active:
@@ -229,8 +241,13 @@ def kwd_menu_activate(widget):
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
+<<<<<<< HEAD:src/fusion-icon
 			sleep(1)
 		set_decorator(kwd)
+=======
+			#sleep(1)
+		set_decorator('kde-window-decorator --replace')
+>>>>>>> 9ab2b59... Converted tray icon to png as from svg for better compatibility.:src/fusion-icon
 		
 def gwd_menu_activate(widget): 
 	if initialized and gwd_decorator.active:
@@ -238,8 +255,13 @@ def gwd_menu_activate(widget):
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
+<<<<<<< HEAD:src/fusion-icon
 			sleep(1)
 		set_decorator(gwd)
+=======
+			#sleep(1)
+		set_decorator('gtk-window-decorator --replace')
+>>>>>>> 9ab2b59... Converted tray icon to png as from svg for better compatibility.:src/fusion-icon
 
 def quit_menu_activate(widget):
 	gtk.main_quit()
@@ -454,7 +476,13 @@ menu.append(item)
 menu.show_all()
 
 # Compiz Fusion Icon
+<<<<<<< HEAD:src/fusion-icon
 icon = gtk.status_icon_new_from_icon_name('fusion-icon')
+=======
+pixbuf = gtk.gdk.pixbuf_new_from_file(path.join(pixmap_dir, 'fusion-icon.svg'))
+icon = gtk.StatusIcon()
+icon.set_from_pixbuf(pixbuf)
+>>>>>>> 9ab2b59... Converted tray icon to png as from svg for better compatibility.:src/fusion-icon
 icon.set_tooltip('Compiz Fusion Icon')
 icon.connect('popup-menu', popup_menu, menu)
 
