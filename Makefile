@@ -13,7 +13,7 @@ clean:
 	./setup.py clean
 uninstall:
 	rm $(TARGET)/bin/fusion-icon
-	rm $(TARGET)/share/icons/hicolor/22x22/fusion-icon.png
-	rm $(TARGET)/share/icons/hicolor/48x48/fusion-icon.png
-	rm $(TARGET)/share/icons/hicolor/scalable/fusion-icon.svg
+	rm $(TARGET)/share/icons/hicolor/22x22/apps/fusion-icon.png
+	rm $(TARGET)/share/icons/hicolor/48x48/apps/fusion-icon.png
+	rm $(TARGET)/share/icons/hicolor/scalable/apps/fusion-icon.svg
 
