@@ -12,5 +12,8 @@ install:
 clean:
 	./setup.py clean
 uninstall:
-	rm $(TARGET)/share/pixmaps/ct-icon.svg
-	rm $(TARGET)/bin/compiz-fusion-icon
+	rm $(TARGET)/bin/fusion-icon
+	rm $(TARGET)/share/icons/hicolor/22x22/fusion-icon.png
+	rm $(TARGET)/share/icons/hicolor/48x48/fusion-icon.png
+	rm $(TARGET)/share/icons/hicolor/scalable/fusion-icon.svg
+

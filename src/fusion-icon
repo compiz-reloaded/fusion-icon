@@ -3,9 +3,9 @@
 import ConfigParser, gobject, pygtk, gtk, compizconfig
 pygtk.require('2.0')
 from commands import getoutput
-from os import mkdir, system, popen, path, environ
+from os import mkdir, system, popen, path, environ, rename
 from subprocess import Popen
-from time import sleep
+from time import sleep, time
 
 # Defining functions
 def installed(app):
@@ -14,18 +14,21 @@ def installed(app):
 
 def default_decorator():
 	if installed('kde-window-decorator') and kde and not gnome:
-		decorator = 'kde-window-decorator --replace'
+		decorator = gwd
 	elif installed('gtk-window-decorator') and gnome and not kde:
-		decorator = 'gtk-window-decorator --replace'
+		decorator = gwd
 	elif  installed('emerald'):
-		decorator = 'emerald --replace'
+		decorator = emerald
 	elif installed('gtk-window-decorator'):
-		decorator = 'gtk-window-decorator --replace'	
+		decorator = gwd
 	elif installed('kde-window-decorator'):
-		decorator = 'kde-window-decorator --replace'
+		decorator = kwd
 	else:
 		decorator = ''
-	print '* choosing ', decorator, ' as default decorator'
+	if decorator != '':
+		print '... choosing ', decorator, ' as default decorator'
+	else:
+		print "*** Warning: no decorator installed"
 	return decorator
 
 def create_config_file():
@@ -46,7 +49,7 @@ def fallback_wm():
 		configuration.set('window_manager', 'active_wm', 'kwin')
 	elif installed('metacity') and gnome and not kde:
 		configuration.set('window_manager', 'active_wm', 'metacity')
-	else: 
+	else:
 		configuration.set('window_manager', 'active_wm', '')
 
 def env_intel():
@@ -97,21 +100,16 @@ def start_compiz():
 	indirect_rendering = configuration.get('compiz_options', 'indirect_rendering')
 	loose_binding = configuration.get('compiz_options', 'loose_binding')
 	# Start Compiz WM
-	system('killall gtk-window-decorator kde-window-decorator emerald')
-	if not decoplugin.Enabled:
-		context.ProcessEvents()
-		decoplugin.Enabled = True
-		decoplugin.Update()
-		context.Write()
+	system('killall gtk-window-decorator kde-window-decorator emerald')	
 	#sleep(2)
 	run_compiz = env_variables + compiz + ' --replace --sm-disable --ignore-desktop-hints ccp ' + fast_filter + ' ' + indirect_rendering + ' ' + loose_binding
-	print run_compiz
+	print "Executing:", run_compiz
 	Popen(run_compiz, shell=True)
 
 def pre_start_wm():
 	active_wm = configuration.get('window_manager', 'active_wm')
-	#make sure not to start compiz if not installed.
-	if compiz != '':
+	#make sure not to start set WM if not installed.
+	if installed(active_wm):
 		start_wm(active_wm)
 	else:
 		fallback_wm()
@@ -126,15 +124,16 @@ def set_decorator(decorator):
 		context.Write()
 		
 def get_decorator():
-	if decosetting.Value != '':
+	if decosetting.Value == gwd or kwd or emerald:
 		decorator = decosetting.Value
 	else:
+		print '* No decorator or invalid decorator set'
 		decorator = default_decorator()
 	return decorator
 	
 # Compiz-Manager Menu Functions
 def popup_menu(widget, button, time, data = None):
-	if button == 3 and data:
+	if data:
 		data.show_all()
 		data.popup(None, None, gtk.status_icon_position_menu, 3, time, icon)
 
@@ -177,7 +176,7 @@ def xfwm4_menu_activate(widget):
 	# Set Xfwm4 wm
 	configuration.set('window_manager', 'active_wm', 'xfwm4')
 	configuration.write(open(config_file, 'w'))
-	if initialized and metacity_wm.active:
+	if initialized and xfwm4_wm.active:
 		print '* switching to Xfwm4...'
 		pre_start_wm()
 
@@ -216,37 +215,37 @@ def option_lb_activate(widget):
 
 def emerald_menu_activate(widget):
 	if initialized and emerald_decorator.active:
-		if active_wm == compiz and get_decorator() != 'emerald --replace':
+		if active_wm == compiz and get_decorator() != emerald:
 			#remove the '--replace' (and any other arguments)
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
 			sleep(1)
-		set_decorator('emerald --replace')
+		set_decorator(emerald)
 
 def kwd_menu_activate(widget):
 	if initialized and kwd_decorator.active:
-		if active_wm == compiz and get_decorator() != 'kde-window-decorator --replace':
+		if active_wm == compiz and get_decorator() != kwd:
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
 			sleep(1)
-		set_decorator('kde-window-decorator --replace')
+		set_decorator(kwd)
 		
 def gwd_menu_activate(widget): 
 	if initialized and gwd_decorator.active:
-		if active_wm == compiz and get_decorator() != 'gtk-window-decorator --replace':
+		if active_wm == compiz and get_decorator() != gwd:
 			old_dec_list = get_decorator().split()
 			old_decorator = old_dec_list[0]
 			system('killall %s' % (old_decorator))
 			sleep(1)
-		set_decorator('gtk-window-decorator --replace')
+		set_decorator(gwd)
 
 def quit_menu_activate(widget):
 	gtk.main_quit()
 
-initialized = False
-first_set = False
+initialized = first_set = False
+
 always_indirect = is_always_indirect()
 
 #Open CompizConfig context
@@ -264,14 +263,16 @@ for application in apps:
 compiz = ''
 if installed('compiz.real'): compiz = 'compiz.real'
 elif installed('compiz'): compiz = 'compiz'
-
+gwd = 'gtk-window-decorator --replace'
+kwd = 'kde-window-decorator --replace'
+emerald = 'emerald --replace'
 
 # Check whether GNOME or KDE running
 kde = gnome = False
 if system('pgrep gnome-session') == 0: gnome = True
 if system('pgrep dcop') == 0: kde = True
 
-print 'gnome is', gnome, ', kde is', kde
+print 'gnome is', str(gnome) + '; kde is', str(kde)
 
 active_decorator = get_decorator()
 first_set = True
@@ -282,7 +283,6 @@ first_set = False
 home = environ.get('HOME')
 config_folder = environ.get('XDG_CONFIG_HOME', path.join(home, '.config'))  
 config_file = path.join(config_folder, 'fusion-icon')
-pixmap_dir = '/usr/share/pixmaps'
 
 # Configuration file setup
 if not path.exists(config_folder):
@@ -292,12 +292,29 @@ elif not path.exists(config_file):
 	create_config_file()
 
 # Retrieve configuration from ~/.config/fusion-icon
-configuration = ConfigParser.ConfigParser()
-configuration.read(config_file)
-active_wm = configuration.get('window_manager', 'active_wm')
-fast_filter = configuration.get('compiz_options', 'fast_filter')
-indirect_rendering = configuration.get('compiz_options', 'indirect_rendering')
-loose_binding = configuration.get('compiz_options', 'loose_binding')
+try:
+	configuration = ConfigParser.ConfigParser()
+	configuration.read(config_file)
+	active_wm = configuration.get('window_manager', 'active_wm')	
+	fast_filter = configuration.get('compiz_options', 'fast_filter')
+	indirect_rendering = configuration.get('compiz_options', 'indirect_rendering')
+	loose_binding = configuration.get('compiz_options', 'loose_binding')
+except:
+	print "* Configuration file (" + config_file + ") invalid"
+	if path.exists(config_file):
+		config_backup = path.join(config_folder, 'fusion-icon.backup.' + str(int(time())))
+		rename(config_file, config_backup)
+		print "... backed up to:", config_backup
+	print "* Generating new configuration file"
+	configuration = ConfigParser.ConfigParser()	
+	create_config_file()
+	configuration.read(config_file)
+	active_wm = configuration.get('window_manager', 'active_wm')	
+	fast_filter = configuration.get('compiz_options', 'fast_filter')
+	indirect_rendering = configuration.get('compiz_options', 'indirect_rendering')
+	loose_binding = configuration.get('compiz_options', 'loose_binding')
+
+### User Interface ###
 
 # Window Manager
 wm_menu = gtk.Menu()
@@ -361,7 +378,7 @@ options_menu.append(option_lb)
 decorator_menu = gtk.Menu()
 emerald_decorator = gtk.RadioMenuItem(label=' Emerald')
 emerald_decorator.connect('activate', emerald_menu_activate)
-if active_decorator == 'emerald --replace':
+if active_decorator == emerald:
 	emerald_decorator.set_active(True)
 if not installed('emerald'):
 	emerald_decorator.set_active(False)
@@ -372,7 +389,7 @@ if installed('gtk-window-decorator'):
 	gwd_decorator = gtk.RadioMenuItem(label=' GTK Window Decorator')
 	gwd_decorator.set_group(emerald_decorator)
 	gwd_decorator.connect('activate', gwd_menu_activate)
-	if active_decorator == 'gtk-window-decorator --replace':
+	if active_decorator == gwd:
 		gwd_decorator.set_active(True)
 	decorator_menu.append(gwd_decorator)
 
@@ -380,7 +397,7 @@ if installed('kde-window-decorator'):
 	kwd_decorator = gtk.RadioMenuItem(label=' KDE Window Decorator')
 	kwd_decorator.set_group(emerald_decorator)
 	kwd_decorator.connect('activate', kwd_menu_activate)
-	if active_decorator == 'kde-window-decorator --replace':
+	if active_decorator == kwd:
 		kwd_decorator.set_active(True)
 	decorator_menu.append(kwd_decorator)
 
@@ -437,9 +454,7 @@ menu.append(item)
 menu.show_all()
 
 # Compiz Fusion Icon
-pixbuf = gtk.gdk.pixbuf_new_from_file(path.join(pixmap_dir, 'fusion-icon.png'))
-icon = gtk.StatusIcon()
-icon.set_from_pixbuf(pixbuf)
+icon = gtk.status_icon_new_from_icon_name('fusion-icon')
 icon.set_tooltip('Compiz Fusion Icon')
 icon.connect('popup-menu', popup_menu, menu)
 
