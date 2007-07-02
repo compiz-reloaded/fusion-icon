@@ -26,7 +26,7 @@ def default_decorator():
 	else:
 		decorator = ''
 	if decorator != '':
-		print '... choosing ', decorator, ' as default decorator'
+		print '... choosing', decorator, 'as default decorator'
 	else:
 		print "*** Warning: no decorator installed"
 	return decorator
@@ -124,7 +124,7 @@ def set_decorator(decorator):
 		context.Write()
 		
 def get_decorator():
-	if decosetting.Value == gwd or kwd or emerald:
+	if decosetting.Value == (gwd or kwd or emerald):
 		decorator = decosetting.Value
 	else:
 		print '* No decorator or invalid decorator set'
