@@ -1,19 +1,25 @@
 # Makefile for Compiz Fusion Icon
 # Written by: crdlb <christopherw@verizon.net>
 
-# Default installation directory (from prefix in python)
-TARGET=/usr
+prefix = /usr
+dirs := 22x22 24x24 32x32 48x48 scalable
+frontends := gtk qt3 qt4
 
-# Make options
-build:
-	./setup.py build
+help:
+	$(info * type 'sudo make install' to install fusion-icon to /usr)
+	$(info ... or use 'sudo make prefix=/path install' to specify a different prefix.)
+	$(info ... by default, all frontends are installed (gtk, qt3, and qt4). To install with only gtk (for example), use 'sudo make frontends=gtk install' )
+
 install:
-	./setup.py install
-clean:
-	./setup.py clean
+	mkdir -p $(prefix)/share/fusion-icon/
+	install -t $(prefix)/share/fusion-icon/ src/libfusionicon.py
+	for frontend in $(frontends); do install -t $(prefix)/share/fusion-icon/ src/fusion-icon-$$frontend.py; done
+	mkdir -p $(prefix)/bin/
+	install -t $(prefix)/bin/ src/fusion-icon
+	for dir in $(dirs); do mkdir -p $(prefix)/share/icons/hicolor/$$dir/apps/ && install -t $(prefix)/share/icons/hicolor/$$dir/apps/ images/$$dir/fusion-icon.*; done
+	
 uninstall:
-	rm $(TARGET)/bin/fusion-icon
-	rm $(TARGET)/share/icons/hicolor/22x22/apps/fusion-icon.png
-	rm $(TARGET)/share/icons/hicolor/48x48/apps/fusion-icon.png
-	rm $(TARGET)/share/icons/hicolor/scalable/apps/fusion-icon.svg
+	-rm -r $(prefix)/share/fusion-icon/ 
+	-rm $(prefix)/bin/fusion-icon 
+	-for dir in $(dirs); do rm $(prefix)/share/icons/hicolor/$$dir/apps/fusion-icon.*; done
 
