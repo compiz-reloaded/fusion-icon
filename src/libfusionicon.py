@@ -16,7 +16,7 @@ def default_decorator():
 		decorator = kwd
 	elif installed('gtk-window-decorator') and gnome and not kde:
 		decorator = gwd
-	elif  installed('emerald'):
+	elif installed('emerald'):
 		decorator = emerald
 	elif installed('gtk-window-decorator'):
 		decorator = gwd
