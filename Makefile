@@ -12,14 +12,13 @@ help:
 
 install:
 	mkdir -p $(DESTDIR)$(prefix)/share/fusion-icon/
-	install -t $(DESTDIR)$(prefix)/share/fusion-icon/ src/libfusionicon.py
-	for frontend in $(frontends); do install -t $(DESTDIR)$(prefix)/share/fusion-icon/ src/fusion-icon-$$frontend.py; done
+	install src/libfusionicon.py $(DESTDIR)$(prefix)/share/fusion-icon/
+	for frontend in $(frontends); do install src/fusion-icon-$$frontend.py $(DESTDIR)$(prefix)/share/fusion-icon/; done
 	mkdir -p $(DESTDIR)$(prefix)/bin/
-	install -t $(DESTDIR)$(prefix)/bin src/fusion-icon
-	
-	for dir in $(dirs); do mkdir -p $(DESTDIR)$(prefix)/share/icons/hicolor/$$dir/apps/ && install -t $(DESTDIR)$(prefix)/share/icons/hicolor/$$dir/apps/ images/$$dir/fusion-icon.png; done
+	install src/fusion-icon $(DESTDIR)$(prefix)/bin
+	for dir in $(dirs); do mkdir -p $(DESTDIR)$(prefix)/share/icons/hicolor/$$dir/apps/ && install images/$$dir/fusion-icon.png $(DESTDIR)$(prefix)/share/icons/hicolor/$$dir/apps/; done
 	mkdir -p $(DESTDIR)$(prefix)/share/icons/hicolor/scalable/apps/
-	install -t $(DESTDIR)$(prefix)/share/icons/hicolor/scalable/apps/ images/scalable/fusion-icon.svg
+	install images/scalable/fusion-icon.svg $(DESTDIR)$(prefix)/share/icons/hicolor/scalable/apps/ 
 	
 uninstall:
 	-rm -r $(DESTDIR)$(prefix)/share/fusion-icon/ 
