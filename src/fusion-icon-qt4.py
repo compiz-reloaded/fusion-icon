@@ -137,7 +137,5 @@ SysTray.menu.addSeparator()
 SysTray.menu.addAction("Quit",app.quit)
 SysTray.setContextMenu(SysTray.menu)
 SysTray.show()
-if active_wm == compiz:
-    reload_wm()
 app.exec_()
 

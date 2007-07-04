@@ -192,4 +192,4 @@ if not installed(active_wm):
 if always_indirect:
 	set_setting('compiz options', 'indirect rendering', 1)
 
-
+start_wm()

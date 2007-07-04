@@ -215,5 +215,4 @@ icon.set_tooltip('Compiz Fusion Icon')
 icon.connect('popup-menu', popup_menu, menu)
 
 initialized = True
-start_wm()
 gtk.main()

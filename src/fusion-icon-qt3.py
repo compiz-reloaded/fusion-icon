@@ -241,6 +241,5 @@ app = QApplication(sys.argv)
 SysTray = SystrayIcon("Fusion")
 SysTray.show()
 initialized = True
-start_wm()
 QObject.connect(SysTray,PYSIGNAL("endIcon()"), app.quit) 
 app.exec_loop()
