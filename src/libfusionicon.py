@@ -136,7 +136,6 @@ for application in apps:
 	if system('which ' + application + ' 2>/dev/null') == 0:
 		app_is_installed.append(application)
 
-compiz = ''
 if installed('compiz.real'): compiz = 'compiz.real'
 elif installed('compiz'): compiz = 'compiz'
 gwd = 'gtk-window-decorator --replace'

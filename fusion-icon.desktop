@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Compiz Fusion Icon
+Comment=Start and manage Compiz Fusion
+Exec=fusion-icon
+Icon=fusion-icon
+Terminal=false
+Type=Application
+Categories=System;Application;
+Encoding=UTF-8

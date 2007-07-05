@@ -1,4 +1,67 @@
 #!/bin/sh
-#Compiz Fusion Icon Wrapper Script
+# Compiz Fusion Icon Wrapper Script
 
-$(dirname $0)/../share/fusion-icon/fusion-icon-gtk.py
+frontend="" # Set to gtk, qt3 (currently not installed by default), or qt4 to override autodetection
+datadir=$(dirname $0)/../share/fusion-icon
+
+function reset {
+	if [[ -n $XDG_CONFIG_HOME ]]; then
+		rm $XDG_CONFIG_HOME/fusion-icon && exit 0 || exit 1
+	else
+		rm ~/.config/fusion-icon && exit 0 || exit 1
+	fi
+}
+
+function help {
+	echo "Usage: $(basename $0) [options] [frontend]"
+	echo
+	echo "  --help     Display this text"
+	echo "  --reset    Remove fusion-icon configuration file"
+	echo
+	echo "Frontends:"
+	echo "  --gtk      Use the pygtk 2.10 frontend"
+	echo "  --qt3      Use the Qt3 frontend (currently not installed by default)"
+	echo "  --qt4      Use the Qt4 frontend"
+	exit 0
+}
+
+for arg in "$@"; do
+	case "$arg" in
+	"-h" | "--help" )	help ;;
+	"--reset"       )	reset ;;
+	"--gtk" | "gtk" )	frontend="gtk"; break ;;
+	"--qt3" | "qt3" )	frontend="qt3"; break ;;
+	"--qt4" | "qt4" )	frontend="qt4"; break ;;
+	*               )	echo "error: \"$arg\" is an invalid argument."
+						exit 1 ;;
+	esac
+done
+
+# Try to pick the frontend that will best match the environment (and has the needed python bindings)
+if [[ -z $frontend ]]; then
+	if [[ -n $(ps -A | grep gnome-session) && -f $datadir/fusion-icon-gtk.py && "python -c 'import pygtk'" ]]; then
+		echo "* Using GTK frontend"
+		frontend=gtk
+	elif [[ -n $(ps -A | grep dcop) ]]; then
+		if [[ -f $datadir/fusion-icon-qt4.py && "python -c 'import PyQt4'" ]]; then
+			echo "* Using Qt4 frontend"
+			frontend=qt4
+		elif [[ -f $datadir/fusion-icon-qt3.py && "python -c 'import qt ctypes'" ]]; then
+			echo "* Using Qt3 frontend"
+			frontend=qt3
+		fi
+	elif [[ -f $datadir/fusion-icon-gtk.py && "python -c 'import pygtk'" ]]; then
+		echo "* Using GTK frontend"
+		frontend=gtk
+	elif [[ -f $datadir/fusion-icon-qt4.py && "python -c 'import PyQt4'" ]]; then
+		echo "* Using Qt4 frontend"
+		frontend=qt4
+	elif [[ -f $datadir/fusion-icon-qt3.py && "python -c 'import qt ctypes'" ]]; then
+		echo "* Using Qt3 frontend"
+		frontend=qt3
+	else echo "error: no frontends installed"
+		exit 1
+	fi
+fi
+
+$datadir/fusion-icon-$frontend.py
