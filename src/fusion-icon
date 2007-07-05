@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Compiz Fusion Icon Wrapper Script
 
 frontend="" # Set to gtk, qt3 (currently not installed by default), or qt4 to override autodetection
