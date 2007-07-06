@@ -109,8 +109,8 @@ def env_indirect():
 def env_fglrx():
 	'Determines if we are using fglrx'
 	
-	for x in fglrx_locations:
-		if os.path.exists(location):
+	for location in fglrx_locations:
+		if path.exists(location):
 			print '* fglrx found, exporting: LD_PRELOAD=' + location + ' '
 			return 'LD_PRELOAD=' + location + ' '
 	# We've not found anything
