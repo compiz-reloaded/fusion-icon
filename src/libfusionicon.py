@@ -32,21 +32,21 @@ def default_decorator():
 
 	# Use kwd if kde but not gnome
 	if is_installed('kde-window-decorator') and kde and not gnome:
-		decorator = 'kde-window-decorator'
+		decorator = kwd
 
 	# Use gwd if gnome but not kde
 	elif is_installed('gtk-window-decorator') and gnome and not kde:
-		decorator = 'gtk-window-decorator'
+		decorator = gwd
 
 	# Use emerald otherwise
 	elif is_installed('emerald'):
-		decorator = 'emerald'
+		decorator = emerald
 		
 	# Use what is available
 	elif is_installed('gtk-window-decorator'):
-		decorator = 'gtk-window-decorator'
+		decorator = gwd
 	elif is_installed('kde-window-decorator'):
-		decorator = 'kde-window-decorator'
+		decorator = kwd
 
 	if decorator != None:
 		print '... choosing', decorator, 'as default decorator'
