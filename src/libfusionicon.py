@@ -158,8 +158,7 @@ def set_decorator(decorator):
 
 	context.Read()
 	context.ProcessEvents()
-	decosetting.Value = decorator + ' --replace'
-
+	decosetting.Value = decorator
 	print '* Setting decorator to', decosetting.Value
 
 	context.Write()

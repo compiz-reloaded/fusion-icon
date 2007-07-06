@@ -11,7 +11,7 @@ def help():
 	print
 	print 'Frontends:'
 	print '  --gtk      Use the pygtk 2.10 frontend'
-	#print '  --qt3      Use the PyQt3 frontend (currently not installed by default)'
+	print '  --qt3      Use the PyQt3 frontend (currently not installed by default)'
 	print '  --qt4      Use the PyQt4 frontend'
 	sys.exit(0)
 

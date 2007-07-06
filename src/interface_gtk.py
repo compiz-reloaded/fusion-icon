@@ -4,6 +4,7 @@ import pygtk, gobject
 pygtk.require('2.0')
 import gtk
 from libfusionicon import *
+from time import sleep
 
 # Compiz-Manager Menu Functions
 def popup_menu(widget, button, time, data = None):
