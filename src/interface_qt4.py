@@ -83,11 +83,11 @@ SysTray.setToolTip("Compiz Fusion Icon")
 SysTray.managerMenu = QtGui.QMenu()
 if compiz != '':
     SysTray.managerMenu.addAction("Compiz",runCompiz)
-if installed('metacity'):
+if is_installed('metacity'):
     SysTray.managerMenu.addAction("Metacity",runMetacity)
-if installed('kwin'):
+if is_installed('kwin'):
     SysTray.managerMenu.addAction("Kwin",runKwin)
-if installed('xfwm4'):
+if is_installed('xfwm4'):
     SysTray.managerMenu.addAction("Xfwm4",runXfwm4)
 
 SysTray.optionsMenu = QtGui.QMenu()
@@ -105,21 +105,21 @@ if loose_binding:
 SysTray.decoratorMenu = QtGui.QMenu()
 actionEmerald = SysTray.decoratorMenu.addAction("Emerald",toggleEmerald)
 actionEmerald.setCheckable(True)
-if installed('emerald'):
+if is_installed('emerald'):
     if decosetting.Value == emerald:
         lockItem(actionEmerald, True)
 else:
     actionEmerald.setVisible(False)
 actionGWD = SysTray.decoratorMenu.addAction("GTK Decorator",toggleGWD)
 actionGWD.setCheckable(True)
-if installed('gtk-window-decorator'):
+if is_installed('gtk-window-decorator'):
     if decosetting.Value == gwd:
          lockItem(actionGWD, True)
 else:
     actionGWD.setVisible(False)
 actionKWD = SysTray.decoratorMenu.addAction("KDE Decorator",toggleKWD)
 actionKWD.setCheckable(True)
-if installed('kde-window-decorator'):
+if is_installed('kde-window-decorator'):
     if decosetting.Value == kwd:
          lockItem(actionKWD, True)
 else:

@@ -98,7 +98,7 @@ if compiz == '':
 	compiz_wm.set_sensitive(False)
 wm_menu.append(compiz_wm)
 
-if installed('kwin'):
+if is_installed('kwin'):
 	kwin_wm = gtk.RadioMenuItem(label=' Kwin')
 	kwin_wm.set_group(compiz_wm)
 	kwin_wm.connect('activate', kwin_menu_activate)
@@ -106,7 +106,7 @@ if installed('kwin'):
 		kwin_wm.set_active(True)
 	wm_menu.append(kwin_wm)
 
-if installed('metacity'):
+if is_installed('metacity'):
 	metacity_wm = gtk.RadioMenuItem(label=' Metacity')
 	metacity_wm.set_group(compiz_wm)
 	metacity_wm.connect('activate', metacity_menu_activate)
@@ -114,7 +114,7 @@ if installed('metacity'):
 		metacity_wm.set_active(True)
 	wm_menu.append(metacity_wm)
 
-if installed('xfwm4'):
+if is_installed('xfwm4'):
 	xfwm4_wm = gtk.RadioMenuItem(label=' Xfwm4')
 	xfwm4_wm.set_group(compiz_wm)
 	xfwm4_wm.connect('activate', xfwm4_menu_activate)
@@ -142,12 +142,12 @@ emerald_decorator = gtk.RadioMenuItem(label=' Emerald')
 emerald_decorator.connect('activate', emerald_menu_activate)
 if active_decorator == emerald:
 	emerald_decorator.set_active(True)
-if not installed('emerald'):
+if not is_installed('emerald'):
 	emerald_decorator.set_active(False)
 	emerald_decorator.set_sensitive(False)
 decorator_menu.append(emerald_decorator)
 
-if installed('gtk-window-decorator'):
+if is_installed('gtk-window-decorator'):
 	gwd_decorator = gtk.RadioMenuItem(label=' GTK Window Decorator')
 	gwd_decorator.set_group(emerald_decorator)
 	gwd_decorator.connect('activate', gwd_menu_activate)
@@ -155,7 +155,7 @@ if installed('gtk-window-decorator'):
 		gwd_decorator.set_active(True)
 	decorator_menu.append(gwd_decorator)
 
-if installed('kde-window-decorator'):
+if is_installed('kde-window-decorator'):
 	kwd_decorator = gtk.RadioMenuItem(label=' KDE Window Decorator')
 	kwd_decorator.set_group(emerald_decorator)
 	kwd_decorator.connect('activate', kwd_menu_activate)
@@ -171,10 +171,10 @@ item.set_image(img_sm)
 item.connect('activate', configure_menu_activate)
 menu.append(item)
 item = gtk.ImageMenuItem('Emerald Theme Manager')
-if not installed('emerald'):
+if not is_installed('emerald'):
 	item.set_sensitive(False)
 item.connect('activate', etm_menu_activate)
-if installed('emerald'):
+if is_installed('emerald'):
 	img_etm = gtk.image_new_from_icon_name('emerald-theme-manager-icon', gtk.ICON_SIZE_MENU)
 	item.set_image(img_etm)
 menu.append(item)

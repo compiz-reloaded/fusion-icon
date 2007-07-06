@@ -171,11 +171,11 @@ if active_wm == 'xfwm4':
 QObject.connect(groupWM, SIGNAL("selected(QAction*)"), run_wm_slot)
 if compiz == '':
     actionCompizWM.setEnabled(False)
-if not installed('metacity'):
+if not is_is_installed('metacity'):
     actionMetacityWM.setEnabled(False)
-if not installed('kwin'):
+if not is_is_installed('kwin'):
     actionKwinWM.setEnabled(False)
-if not installed('xfwm4'):
+if not is_is_installed('xfwm4'):
     actionXfwm4WM.setEnabled(False)
 groupWM.addTo(managerMenu)
 
@@ -210,11 +210,11 @@ elif decosetting.Value == gwd:
 elif decosetting.Value == kwd:
     actionKDEWD.toggle()
 QObject.connect(groupWD, SIGNAL("selected(QAction*)"), run_wd_slot)
-if not installed('emerald'):
+if not is_is_installed('emerald'):
     actionEmeraldWD.setEnabled(False)
-if not installed('gtk-window-decorator'):
+if not is_is_installed('gtk-window-decorator'):
     actionGTKWD.setEnabled(False)
-if not installed('kde-window-decorator'):
+if not is_is_installed('kde-window-decorator'):
     actionKDEWD.setEnabled(False)
 groupWD.addTo(decoratorMenu)
 

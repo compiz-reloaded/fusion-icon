@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+# Compiz Fusion Icon
+
+import os, sys
+
+def help():
+	print 'Usage: fusion-icon [options] [frontend]'
+	print
+	print '  --help     Display this text'
+	print '  --reset    Remove fusion-icon configuration file'
+	print
+	print 'Frontends:'
+	print '  --gtk      Use the pygtk 2.10 frontend'
+	#print '  --qt3      Use the PyQt3 frontend (currently not installed by default)'
+	print '  --qt4      Use the PyQt4 frontend'
+	sys.exit(0)
+
+def reset():
+	#cut-and-pasted from libfusionicon to avoid a full load for --reset 
+	config_folder = environ.get('XDG_CONFIG_HOME', path.join(environ.get('HOME'), '.config'))  
+	config_file = path.join(config_folder, 'fusion-icon')
+	print '* Configuration file (' + config_file + ') being reset'
+	try:
+		if path.exists(config_file):
+			config_backup = path.join(config_folder, 'fusion-icon.backup.' + str(int(time())))
+			rename(config_file, config_backup)
+			print '... backed up to:', config_backup
+		print '* Configuration reset'
+		sys.exit(0)
+		
+	except:
+		print '* Error: configuration reset failed'
+			
+def import_gtk(die_on_error=False):
+	try:
+		import pygtk, interface_gtk
+		print '* Using the GTK Interface'
+
+	except ImportError:
+		print '* Error: failed to import pygtk'
+		
+		if die_on_error:
+			sys.exit(1)
+		
+def import_qt4(die_on_error=False):
+	try:
+		import PyQt4, interface_qt4
+		print '* Using the Qt4 Interface'
+	
+	except ImportError:
+		print '* Error: failed to import PyQt4'
+
+		if die_on_error:
+			sys.exit(1)
+			
+def import_qt3(die_on_error=False):
+	try:
+		import qt, ctypes, interface_qt3
+		print '* Using the Qt4 Interface'
+	
+	except ImportError:
+		print '* Error: failed to import PyQt3'
+
+		if die_on_error:
+			sys.exit(1)
+
+
+## Detect and run args
+# If we're running --help, don't progress past it
+if '--help' in sys.argv or '-h' in sys.argv	:
+	help()
+
+if '--reset' in sys.argv:
+	reset()
+	
+# Passed help, import libfusionicon
+from libfusionicon import *
+
+
+# Passed --reset, so either use what's specified, or use autodetection
+interface = ''
+if '--gtk' in sys.argv:
+	interface = 'gtk'
+elif '--qt4' in sys.argv:
+	interface = 'qt4'
+elif '--qt3' in sys.argv:
+	interface = 'qt3'
+
+if interface == '':
+	if gnome or xfce4:
+		interface = 'gtk'
+	elif kde:
+		interface = 'qt4'
+
+if interface == 'gtk':
+	import_gtk(True)	
+elif interface == 'qt4':
+	import_qt4(True)
+elif interface == 'qt3':
+	import_qt3(True)
+else:
+	print '*** Failed autodetection, you must be using an unsupported DE. (Gnome, KDE, XFCE4 are supported)'
+	sys.exit(1)
