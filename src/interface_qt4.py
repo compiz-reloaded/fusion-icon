@@ -6,13 +6,6 @@ from PyQt4 import QtGui, QtCore
 from libfusionicon import *
 
 #Defs
-def lockItem(action,b):
-    if b:
-        action.setChecked(True)
-        action.setEnabled(False)
-    else:
-        action.setChecked(False)
-        action.setEnabled(True)
 def open_ccsm():
     Popen(['ccsm'])
 def open_emeraldthemes():
@@ -21,9 +14,8 @@ def reload_wm():
     print '* Reloading Window Manager ...'
     start_wm()
 def run_wm(str):
-    if active_wm != str:
+    if get_setting('window manager', 'active wm') != str:
         set_setting('window manager', 'active wm', str)
-        configuration.write(open(config_file, 'w'))
         print '* switching to', str,'...'
         start_wm()
 def runCompiz():
@@ -41,8 +33,7 @@ def toggleIR():
     else:
         print '* enabling  Indirect Rendering...'
         set_setting('compiz options', 'indirect rendering', '1')
-    configuration.write(open(config_file, 'w'))
-    if active_wm == compiz:
+    if get_setting('window manager', 'active wm') == compiz:
         reload_wm()
 def toggleLB():
     if int(get_setting('compiz options', 'loose binding')):
@@ -51,79 +42,78 @@ def toggleLB():
     else:
         print '* enabling  Loose Binding...'
         set_setting('compiz options', 'loose binding', '1')
-    configuration.write(open(config_file, 'w'))
-    if active_wm == compiz:
+    if get_setting('window manager', 'active wm') == compiz:
         reload_wm()
 def toggleEmerald():
     system('killall kde-window-decorator gtk-window-decorator 2>/dev/null')
-    lockItem(actionGWD, False)
-    lockItem(actionKWD, False)
-    lockItem(actionEmerald, True)
     set_decorator(emerald)
 def toggleGWD():
     system('killall kde-window-decorator emerald 2>/dev/null')
-    lockItem(actionEmerald, False)
-    lockItem(actionKWD, False)
-    lockItem(actionGWD, True)	
     set_decorator(gwd)
 def toggleKWD():
     system('killall emerald gtk-window-decorator 2>/dev/null')
     set_decorator(kwd)
-    lockItem(actionEmerald, False)
-    lockItem(actionGWD, False)
-    lockItem(actionKWD, True)
 
 #Run Menu
-QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Plastique'))
+#QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Plastique'))
 app = QtGui.QApplication(sys.argv)
 
-SysTray = QtGui.QSystemTrayIcon(QtGui.QIcon('/usr/share/pixmaps/fusion-icon.png'))
+SysTray = QtGui.QSystemTrayIcon(QtGui.QIcon('../icons/hicolor/22x22/apps/fusion-icon.png'))
 SysTray.setToolTip("Compiz Fusion Icon")
 
+active_wm = get_setting('window manager', 'active wm')
 SysTray.managerMenu = QtGui.QMenu()
+groupManager = QtGui.QActionGroup(SysTray.managerMenu)
 if compiz != '':
-    SysTray.managerMenu.addAction("Compiz",runCompiz)
+    actionCompiz = groupManager.addAction(SysTray.managerMenu.addAction("Compiz",runCompiz))
+    actionCompiz.setCheckable(True)
+    if active_wm == compiz:
+        actionCompiz.setChecked(True)
 if is_installed('metacity'):
-    SysTray.managerMenu.addAction("Metacity",runMetacity)
+    actionMetacity = groupManager.addAction(SysTray.managerMenu.addAction("Metacity",runMetacity))
+    actionMetacity.setCheckable(True)
+    if active_wm == 'metacity':
+        actionMetacity.setChecked(True)
 if is_installed('kwin'):
-    SysTray.managerMenu.addAction("Kwin",runKwin)
+    actionKwin = groupManager.addAction(SysTray.managerMenu.addAction("Kwin",runKwin))
+    actionKwin.setCheckable(True)
+    if active_wm == 'kwin':
+        actionKwin.setChecked(True)
 if is_installed('xfwm4'):
-    SysTray.managerMenu.addAction("Xfwm4",runXfwm4)
+    actionXfwm4 = groupManager.addAction(SysTray.managerMenu.addAction("Xfwm4",runXfwm4))
+    actionXfwm4.setCheckable(True)
+    if active_wm == 'xfwm4':
+        actionXfwm4.setChecked(True)
 
 SysTray.optionsMenu = QtGui.QMenu()
 actionIR = SysTray.optionsMenu.addAction("Indirect Rendering",toggleIR)
 actionIR.setCheckable(True)
 actionLB = SysTray.optionsMenu.addAction("Loose Binding",toggleLB)
 actionLB.setCheckable(True)
-if always_indirect:
-    lockItem(actionIR, True)
-elif indirect_rendering:
+if int(get_setting('compiz options', 'indirect rendering')):
     actionIR.setChecked(True)
+if always_indirect:
+    actionIR.setEnabled(False)
 if loose_binding:
     actionLB.setChecked(True)
 
 SysTray.decoratorMenu = QtGui.QMenu()
-actionEmerald = SysTray.decoratorMenu.addAction("Emerald",toggleEmerald)
-actionEmerald.setCheckable(True)
+groupDecorator = QtGui.QActionGroup(SysTray.decoratorMenu)
 if is_installed('emerald'):
+    actionEmerald = groupDecorator.addAction(SysTray.decoratorMenu.addAction("Emerald",toggleEmerald))
+    actionEmerald.setCheckable(True)
     if decosetting.Value == emerald:
-        lockItem(actionEmerald, True)
-else:
-    actionEmerald.setVisible(False)
-actionGWD = SysTray.decoratorMenu.addAction("GTK Decorator",toggleGWD)
-actionGWD.setCheckable(True)
+        actionEmerald.setChecked(True)
 if is_installed('gtk-window-decorator'):
+    actionGWD = groupDecorator.addAction(SysTray.decoratorMenu.addAction("GTK Decorator",toggleGWD))
+    actionGWD.setCheckable(True)
     if decosetting.Value == gwd:
-         lockItem(actionGWD, True)
-else:
-    actionGWD.setVisible(False)
-actionKWD = SysTray.decoratorMenu.addAction("KDE Decorator",toggleKWD)
-actionKWD.setCheckable(True)
+         actionGWD.setChecked(True)
 if is_installed('kde-window-decorator'):
+    actionKWD = groupDecorator.addAction(SysTray.decoratorMenu.addAction("KDE Decorator",toggleKWD))
+    actionKWD.setCheckable(True)
     if decosetting.Value == kwd:
-         lockItem(actionKWD, True)
-else:
-    actionKWD.setVisible(False)
+         actionKWD.setChecked(True)
 
 SysTray.menu = QtGui.QMenu()
 SysTray.menu.addAction("Settings Manager",open_ccsm)
