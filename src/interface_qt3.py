@@ -9,7 +9,7 @@ app = QApplication(sys.argv)
 
 # Defs
 def run_wm(str):
-    if active_wm != str:
+    if get_setting('window manager', 'active wm') != str:
         set_setting('window manager', 'active wm', str)
         print '* switching to', str+'...'
         start_wm()
@@ -25,12 +25,12 @@ def run_wm_slot(act):
 def ir_slot(on):
     set_setting('compiz options', 'indirect rendering', on)
     print '* indirect rendering is now %s' % bool(on)
-    if active_wm == compiz:
+    if get_setting('window manager', 'active wm') == compiz:
         start_compiz()
 def lb_slot(on):
     set_setting('compiz options', 'loose binding', on)
     print '* loose binding is now %s' % bool(on)
-    if active_wm == compiz:
+    if get_setting('window manager', 'active wm') == compiz:
         start_compiz()
 def run_wd_slot(act):
     system('killall emerald kde-window-decorator gtk-window-decorator 2>/dev/null')
