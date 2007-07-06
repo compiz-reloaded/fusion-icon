@@ -5,6 +5,46 @@ from qt import *
 import ctypes as c
 from libfusionicon import *
 
+app = QApplication(sys.argv)
+
+# Defs
+def run_wm(str):
+    if active_wm != str:
+        set_setting('window manager', 'active wm', str)
+        print '* switching to', str+'...'
+        start_wm()
+def run_wm_slot(act):
+    if act == actionCompizWM:
+        run_wm('compiz')
+    elif act == actionMetacityWM:
+        run_wm('metacity')
+    elif act == actionKwinWM:
+        run_wm('kwin')
+    elif act == actionXfwm4WM:
+        run_wm('xfwm4')
+def options_slot(act):
+    if act == actionIndirectRender:
+        page = 'indirect rendering'
+    elif act == actionLooseBinding:
+        page = 'loose binding'
+    if int(get_setting('compiz options', page)):
+        set_setting('compiz options', page, 0)
+        print '* disabling', page+'...'
+    else:
+        set_setting('compiz options', page, 1)
+        print '* enabling', page+'...'
+    if active_wm == compiz:
+        start_compiz()
+def run_wd_slot(act):
+    system('killall emerald kde-window-decorator gtk-window-decorator 2>/dev/null')
+    if act == actionEmeraldWD:
+        set_decorator(emerald)
+    elif act == actionGTKWD:
+        set_decorator(gwd)
+    elif act == actionKDEWD:
+        set_decorator(kwd)
+
+# Class
 class SystrayIcon(QLabel):
     def __init__(self, icon, parent = None, name = "Fusion-Icon"):
         QLabel.__init__(self, parent, name, Qt.WMouseNoMask |\
@@ -63,7 +103,6 @@ class SystrayIcon(QLabel):
         XSync.argtypes = [c.c_void_p, c.c_int]
 
         dpy = int(qt_xdisplay())
-        trayWin  = self.winId();
 
         iscreen = XScreenNumberOfScreen(XDefaultScreenOfDisplay(dpy))
         # get systray window (holds _NET_SYSTEM_TRAY_S<screen> atom)
@@ -80,7 +119,7 @@ class SystrayIcon(QLabel):
             k = data()
             k.l = (0, # CurrentTime
                    0, # REQUEST_DOCK
-                   trayWin, # window ID
+                   self.winId(), # window ID
                    0, # empty
                    0) # empty
             ev = XClientMessageEvent(33, #type: ClientMessage
@@ -96,136 +135,6 @@ class SystrayIcon(QLabel):
         QToolTip.add(self, "Compiz Fusion Icon")
 
     def mousePressEvent(self, e):
-        
-        self.actionCompizWM=QAction("Compiz",0,self)
-        self.actionCompizWM.setToggleAction(True)
-        if active_wm == compiz:
-            self.actionCompizWM.toggle()
-        def compiz_slot():
-            set_setting('window manager', 'active wm', compiz)
-            start_wm()
-        self.connect(self.actionCompizWM,SIGNAL("activated()"),compiz_slot)
-        self.actionMetacityWM=QAction("Metacity",0,self)
-        self.actionMetacityWM.setToggleAction(True)
-        if active_wm == 'metacity':
-            self.actionMetacityWM.toggle()
-        def metacity_slot():
-            set_setting('window manager', 'active wm', 'metacity')
-            start_wm()
-        self.connect(self.actionMetacityWM,SIGNAL("activated()"),metacity_slot)
-        self.actionKwinWM=QAction("Kwin",0,self)
-        self.actionKwinWM.setToggleAction(True)
-        if active_wm == 'kwin':
-            self.actionKwinWM.toggle()
-        def kwin_slot():
-            set_setting('window manager', 'active wm', 'kwin')
-            start_wm()
-        self.connect(self.actionKwinWM,SIGNAL("activated()"),kwin_slot)
-        self.actionXfwm4WM=QAction("Xfwm4",0,self)
-        self.actionXfwm4WM.setToggleAction(True)
-        if active_wm == 'xfwm4':
-            self.actionXfwm4WM.toggle()
-        def xfwm4_slot():
-            set_setting('window manager', 'active wm', 'xfwm4')
-            start_wm()
-        self.connect(self.actionXfwm4WM,SIGNAL("activated()"),xfwm4_slot)
-
-        self.actionIndirectRender=QAction("Indirect Rendering",0,self)
-        self.actionIndirectRender.setToggleAction(True)
-        if indirect_rendering != '':
-            self.actionIndirectRender.toggle()
-        def indirectrender_slot():
-            if indirect_rendering:
-                set_setting('compiz options', 'indirect rendering', 1)
-            else:
-                set_setting('compiz options', 'indirect rendering', 0)
-            if active_wm == compiz and initialized:
-                start_compiz()
-        self.connect(self.actionIndirectRender,SIGNAL("activated()"),indirectrender_slot)
-        self.actionLooseBinding=QAction("Loose Binding",0,self)
-        self.actionLooseBinding.setToggleAction(True)
-        if loose_binding:
-            self.actionLooseBinding.toggle()
-        def loosebinding_slot():
-            if loose_binding:
-                set_setting('compiz options', 'loose binding', 1)
-            else:
-                set_setting('compiz options', 'loose binding', 0)
-            if active_wm == compiz and initialized:
-                start_compiz()
-        self.connect(self.actionLooseBinding,SIGNAL("activated()"),loosebinding_slot)
-
-        self.actionEmeraldWD=QAction("Emerald",0,self)
-        def emerald_slot():
-            if initialized:
-                if active_wm == compiz and get_decorator() != emerald:
-                        #remove the '--replace' (and any other arguments)
-                        old_dec_list = get_decorator().split()
-                        old_decorator = old_dec_list[0]
-                        system('killall %s' % (old_decorator))
-                        sleep(1)
-                set_decorator(emerald)
-        self.connect(self.actionEmeraldWD,SIGNAL("activated()"),emerald_slot)
-        self.actionGTKWD=QAction("GTK Window Decorator",0,self)
-        def GTK_slot():
-            if initialized:
-                if active_wm == compiz and get_decorator() != gwd:
-                        old_dec_list = get_decorator().split()
-                        old_decorator = old_dec_list[0]
-                        system('killall %s' % (old_decorator))
-                        sleep(1)
-                set_decorator(gwd)
-        self.connect(self.actionGTKWD,SIGNAL("activated()"),GTK_slot)
-        self.actionKDEWD=QAction("KDE Window Decorator",0,self)
-        def KDE_slot():
-            if initialized:
-                if active_wm == compiz and get_decorator() != kwd:
-                        old_dec_list = get_decorator().split()
-                        old_decorator = old_dec_list[0]
-                        system('killall %s' % (old_decorator))
-                        sleep(1)
-                set_decorator(kwd)
-        self.connect(self.actionKDEWD,SIGNAL("activated()"),KDE_slot)
-
-        self.managerMenu = QPopupMenu()
-        self.optionsMenu = QPopupMenu()
-        self.decoratorMenu = QPopupMenu()
-
-        if compiz != '':
-            self.actionCompizWM.addTo(self.managerMenu)
-        if installed('metacity'):
-            self.actionMetacityWM.addTo(self.managerMenu)
-        if installed('kwin'):
-            self.actionKwinWM.addTo(self.managerMenu)
-        if installed('xfwm4'):
-            self.actionXfwm4WM.addTo(self.managerMenu)
-
-        self.actionIndirectRender.addTo(self.optionsMenu)
-        if always_indirect:
-            self.actionIndirectRender.setEnabled(False)
-        self.actionLooseBinding.addTo(self.optionsMenu)
-
-        self.actionEmeraldWD.addTo(self.decoratorMenu)
-        if not installed('emerald'):
-            self.actionEmeraldWD.setEnabled(False)
-        self.actionGTKWD.addTo(self.decoratorMenu)
-        if not installed('gtk-window-decorator'):
-            self.actionGTKWD.setEnabled(False)
-        self.actionKDEWD.addTo(self.decoratorMenu)
-        if not installed('kde-window-decorator'):
-            self.actionKDEWD.setEnabled(False)
-
-        contextMenu = QPopupMenu()
-        menuSettings = contextMenu.insertItem("Settings Manager")
-        menuEmerald = contextMenu.insertItem("Emerald Theme Manager")
-        contextMenu.insertSeparator()
-        menuReload = contextMenu.insertItem("Reload Window Manager")
-        menuManager = contextMenu.insertItem("Select Window Manager",self.managerMenu)
-        menuOptions = contextMenu.insertItem("Compiz Options",self.optionsMenu)
-        menuDecorator = contextMenu.insertItem("Select Window Decorator",self.decoratorMenu)
-        contextMenu.insertSeparator()
-        menuQuit = contextMenu.insertItem("Quit")
-
         if e.button() == Qt.RightButton:
             id = contextMenu.exec_loop(e.globalPos())
             if id == menuSettings:
@@ -234,12 +143,94 @@ class SystrayIcon(QLabel):
                 etm_menu_activate(None)
             elif id == menuReload:
                 wm_activate(None)
-            elif id == menuQuit:
-                self.emit(PYSIGNAL("endIcon()"), ())
 
-app = QApplication(sys.argv)
+#Menus
+managerMenu = QPopupMenu()
+optionsMenu = QPopupMenu()
+decoratorMenu = QPopupMenu()
+
+#Manager Menu
+groupWM = QActionGroup(managerMenu, "groupWM", True)
+actionCompizWM=QAction("Compiz", 0, groupWM)
+actionCompizWM.setToggleAction(True)
+actionMetacityWM=QAction("Metacity", 0, groupWM)
+actionMetacityWM.setToggleAction(True)
+actionKwinWM=QAction("Kwin", 0, groupWM)
+actionKwinWM.setToggleAction(True)
+actionXfwm4WM=QAction("Xfwm4", 0, groupWM)
+actionXfwm4WM.setToggleAction(True)
+active_wm = get_setting('window manager', 'active wm')
+if active_wm == compiz:
+    actionCompizWM.toggle()
+if active_wm == 'metacity':
+    actionMetacityWM.toggle()
+if active_wm == 'kwin':
+    actionKwinWM.toggle()
+if active_wm == 'xfwm4':
+    actionXfwm4WM.toggle()
+QObject.connect(groupWM, SIGNAL("selected(QAction*)"), run_wm_slot)
+if compiz == '':
+    actionCompizWM.setEnabled(False)
+if not installed('metacity'):
+    actionMetacityWM.setEnabled(False)
+if not installed('kwin'):
+    actionKwinWM.setEnabled(False)
+if not installed('xfwm4'):
+    actionXfwm4WM.setEnabled(False)
+groupWM.addTo(managerMenu)
+
+#Options Menu
+groupOptions = QActionGroup(optionsMenu, "groupOptions", False)
+actionIndirectRender=QAction("Indirect Rendering", 0, groupOptions)
+actionIndirectRender.setToggleAction(True)
+actionLooseBinding=QAction("Loose Binding", 0, groupOptions)
+actionLooseBinding.setToggleAction(True)
+if int(get_setting('compiz options', 'indirect rendering')):
+    actionIndirectRender.toggle()
+if always_indirect:
+    actionIndirectRender.setEnabled(False)
+if int(get_setting('compiz options', 'loose binding')):
+    actionLooseBinding.toggle()
+QObject.connect(groupOptions, SIGNAL("selected(QAction*)"), options_slot)
+groupOptions.addTo(optionsMenu)
+
+
+#Decorator Menu
+groupWD =  QActionGroup(decoratorMenu, "groupWD", True)
+actionEmeraldWD=QAction("Emerald", 0, groupWD)
+actionEmeraldWD.setToggleAction(True)
+actionGTKWD=QAction("GTK Window Decorator", 0, groupWD)
+actionGTKWD.setToggleAction(True)
+actionKDEWD=QAction("KDE Window Decorator", 0, groupWD)
+actionKDEWD.setToggleAction(True)
+if decosetting.Value == emerald:
+     actionEmeraldWD.toggle()
+elif decosetting.Value == gwd:
+    actionGTKWD.toggle()
+elif decosetting.Value == kwd:
+    actionKDEWD.toggle()
+QObject.connect(groupWD, SIGNAL("selected(QAction*)"), run_wd_slot)
+if not installed('emerald'):
+    actionEmeraldWD.setEnabled(False)
+if not installed('gtk-window-decorator'):
+    actionGTKWD.setEnabled(False)
+if not installed('kde-window-decorator'):
+    actionKDEWD.setEnabled(False)
+groupWD.addTo(decoratorMenu)
+
+# Main Menu
+contextMenu = QPopupMenu()
+menuSettings = contextMenu.insertItem("Settings Manager")
+menuEmerald = contextMenu.insertItem("Emerald Theme Manager")
+contextMenu.insertSeparator()
+menuReload = contextMenu.insertItem("Reload Window Manager")
+menuManager = contextMenu.insertItem("Select Window Manager", managerMenu)
+menuOptions = contextMenu.insertItem("Compiz Options", optionsMenu)
+menuDecorator = contextMenu.insertItem("Select Window Decorator", decoratorMenu)
+contextMenu.insertSeparator()
+menuQuit = contextMenu.insertItem("Quit", app.quit)
+
+#Run
 SysTray = SystrayIcon("Fusion")
 SysTray.show()
-initialized = True
-QObject.connect(SysTray,PYSIGNAL("endIcon()"), app.quit) 
 app.exec_loop()
