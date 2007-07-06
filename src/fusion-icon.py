@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # Compiz Fusion Icon
 
-import os, sys
+import os, sys, time
 
 def help():
-	print 'Usage: fusion-icon [options] [interface]'
+	print 'Usage: fusion-icon [action|interface]'
 	print
 	print '  --help     Display this text'
 	print '  --reset    Remove fusion-icon configuration file'
@@ -22,7 +22,7 @@ def reset():
 	print '* Configuration file (' + config_file + ') being reset'
 	try:
 		if path.exists(config_file):
-			config_backup = path.join(config_folder, 'fusion-icon.backup.' + str(int(time())))
+			config_backup = path.join(config_folder, 'fusion-icon.backup.' + str(int(time.time())))
 			rename(config_file, config_backup)
 			print '... backed up to:', config_backup
 		print '* Configuration reset'
@@ -35,11 +35,9 @@ def import_gtk(die_on_error=False):
 	try:
 		print '* Using the GTK Interface'
 		import pygtk, interface_gtk
-
-
+	
 	except ImportError:
 		print '* Error: failed to import pygtk'
-		
 		if die_on_error:
 			sys.exit(1)
 		
@@ -47,11 +45,9 @@ def import_qt4(die_on_error=False):
 	try:
 		print '* Using the Qt4 Interface'
 		import PyQt4, interface_qt4
-
-	
+		
 	except ImportError:
 		print '* Error: failed to import PyQt4'
-
 		if die_on_error:
 			sys.exit(1)
 			
@@ -60,25 +56,21 @@ def import_qt3(die_on_error=False):
 		print '* Using the Qt3 Interface'
 		import qt, ctypes, interface_qt3
 
-	
 	except ImportError:
 		print '* Error: failed to import PyQt3'
-
 		if die_on_error:
 			sys.exit(1)
 
-
 ## Detect and run args
-# If we're running --help, don't progress past it
+# If we're running --help or --reset, don't progress past it
 if '--help' in sys.argv or '-h' in sys.argv	:
 	help()
 
 if '--reset' in sys.argv:
 	reset()
 	
-# Passed help, import libfusionicon
+# Passed help and reset, import libfusionicon
 from libfusionicon import *
-
 
 # Passed --reset, so either use what's specified, or use autodetection
 interface = ''
@@ -94,6 +86,8 @@ if interface == '':
 		interface = 'gtk'
 	elif kde:
 		interface = 'qt4'
+	else:
+		interface = 'gtk'
 
 if interface == 'gtk':
 	import_gtk(True)	
