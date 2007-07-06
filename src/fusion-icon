@@ -39,24 +39,24 @@ done
 
 # Try to pick the frontend that will best match the environment (and has the needed python bindings)
 if [[ -z $frontend ]]; then
-	if [[ -n $(ps -A | grep gnome-session) && -f $datadir/fusion-icon-gtk.py && "python -c 'import pygtk'" ]]; then
+	if [[ -n $(ps -A | grep gnome-session) && -f $datadir/fusion-icon-gtk.py ]] && python -c 'import pygtk'; then
 		echo "* Using GTK frontend"
 		frontend=gtk
 	elif [[ -n $(ps -A | grep dcop) ]]; then
-		if [[ -f $datadir/fusion-icon-qt4.py && "python -c 'import PyQt4'" ]]; then
+		if [[ -f $datadir/fusion-icon-qt4.py ]] && python -c 'import PyQt4'; then
 			echo "* Using Qt4 frontend"
 			frontend=qt4
-		elif [[ -f $datadir/fusion-icon-qt3.py && "python -c 'import qt ctypes'" ]]; then
+		elif [[ -f $datadir/fusion-icon-qt3.py ]] && python -c 'import qt ctypes'; then
 			echo "* Using Qt3 frontend"
 			frontend=qt3
 		fi
-	elif [[ -f $datadir/fusion-icon-gtk.py && "python -c 'import pygtk'" ]]; then
+	elif [[ -f $datadir/fusion-icon-gtk.py ]] && python -c 'import pygtk'; then
 		echo "* Using GTK frontend"
 		frontend=gtk
-	elif [[ -f $datadir/fusion-icon-qt4.py && "python -c 'import PyQt4'" ]]; then
+	elif [[ -f $datadir/fusion-icon-qt4.py ]] && python -c 'import PyQt4'; then
 		echo "* Using Qt4 frontend"
 		frontend=qt4
-	elif [[ -f $datadir/fusion-icon-qt3.py && "python -c 'import qt ctypes'" ]]; then
+	elif [[ -f $datadir/fusion-icon-qt3.py ]] && python -c 'import qt ctypes'; then
 		echo "* Using Qt3 frontend"
 		frontend=qt3
 	else echo "error: no frontends installed"
