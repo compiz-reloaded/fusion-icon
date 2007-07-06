@@ -4,7 +4,7 @@
 frontend="" # Set to gtk, qt3 (currently not installed by default), or qt4 to override autodetection
 datadir=$(dirname $0)/../share/fusion-icon
 
-function reset {
+reset() {
 	if [[ -n $XDG_CONFIG_HOME ]]; then
 		rm $XDG_CONFIG_HOME/fusion-icon && exit 0 || exit 1
 	else
@@ -12,7 +12,7 @@ function reset {
 	fi
 }
 
-function help {
+help() {
 	echo "Usage: $(basename $0) [options] [frontend]"
 	echo
 	echo "  --help     Display this text"
@@ -20,9 +20,34 @@ function help {
 	echo
 	echo "Frontends:"
 	echo "  --gtk      Use the pygtk 2.10 frontend"
-	echo "  --qt3      Use the Qt3 frontend (currently not installed by default)"
-	echo "  --qt4      Use the Qt4 frontend"
+	echo "  --qt3      Use the PyQt3 frontend (currently not installed by default)"
+	echo "  --qt4      Use the PyQt4 frontend"
 	exit 0
+}
+
+exists() {
+	[[ -f $datadir/fusion-icon-$1.py ]] && return 0 || return 1
+}
+
+imports() {
+	python -c "import $*" && return 0 || return 1
+}
+
+gnome_session() {
+	pgrep gnome-session 2>&1>/dev/null && return 0 || return 1
+}
+
+kde_session() {
+	pgrep dcop 2>&1>/dev/null && return 0 || return 1
+}
+
+run_fusion_icon() {
+	if exists $frontend; then
+		$datadir/fusion-icon-$frontend.py
+	else
+		echo "error: specified frontend \"$frontend\" not installed"
+		exit 1
+	fi
 }
 
 for arg in "$@"; do
@@ -39,29 +64,31 @@ done
 
 # Try to pick the frontend that will best match the environment (and has the needed python bindings)
 if [[ -z $frontend ]]; then
-	if [[ -n $(ps -A | grep gnome-session) && -f $datadir/fusion-icon-gtk.py ]] && python -c 'import pygtk'; then
-		echo "* Using GTK frontend"
+	if gnome_session && exists gtk && imports pygtk; then
+		echo "* Using GTK frontend (gnome detected)"
 		frontend=gtk
-	elif [[ -n $(ps -A | grep dcop) ]]; then
-		if [[ -f $datadir/fusion-icon-qt4.py ]] && python -c 'import PyQt4'; then
-			echo "* Using Qt4 frontend"
+	elif kde_session; then
+		if exists qt4 && imports PyQt4; then
+			echo "* Using Qt4 frontend (kde detected)"
 			frontend=qt4
-		elif [[ -f $datadir/fusion-icon-qt3.py ]] && python -c 'import qt ctypes'; then
-			echo "* Using Qt3 frontend"
+		elif exists qt3 && imports qt3 ctypes; then
+			echo "* Using Qt3 frontend (kde detected)"
 			frontend=qt3
 		fi
-	elif [[ -f $datadir/fusion-icon-gtk.py ]] && python -c 'import pygtk'; then
+	elif exists gtk && imports pygtk; then
 		echo "* Using GTK frontend"
 		frontend=gtk
-	elif [[ -f $datadir/fusion-icon-qt4.py ]] && python -c 'import PyQt4'; then
+	elif exists qt4 && imports PyQt4; then
 		echo "* Using Qt4 frontend"
 		frontend=qt4
-	elif [[ -f $datadir/fusion-icon-qt3.py ]] && python -c 'import qt ctypes'; then
+	elif exists qt3 && imports qt ctypes; then
 		echo "* Using Qt3 frontend"
 		frontend=qt3
-	else echo "error: no frontends installed"
+	else
+		echo "error: no frontends installed"
 		exit 1
 	fi
 fi
 
-$datadir/fusion-icon-$frontend.py
+run_fusion_icon
+
