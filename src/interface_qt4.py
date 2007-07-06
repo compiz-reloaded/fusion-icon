@@ -90,7 +90,7 @@ actionIR = SysTray.optionsMenu.addAction("Indirect Rendering",toggleIR)
 actionIR.setCheckable(True)
 actionLB = SysTray.optionsMenu.addAction("Loose Binding",toggleLB)
 actionLB.setCheckable(True)
-if int(get_setting('compiz options', 'indirect rendering'):
+if int(get_setting('compiz options', 'indirect rendering')):
     actionIR.setChecked(True)
 if always_indirect:
     actionIR.setEnabled(False)
