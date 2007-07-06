@@ -9,7 +9,7 @@ def help():
 	print '  --help     Display this text'
 	print '  --reset    Remove fusion-icon configuration file'
 	print
-	print 'Frontends:'
+	print 'Interfaces:'
 	print '  --gtk      Use the pygtk 2.10 interface'
 	print '  --qt3      Use the PyQt3 interface (currently not installed by default)'
 	print '  --qt4      Use the PyQt4 interface'

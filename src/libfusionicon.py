@@ -108,12 +108,7 @@ def env_indirect():
 		
 def env_fglrx():
 	'Determines if we are using fglrx'
-
-	if path.exists('/usr/lib/fglrx/libGL.so.1.2.xlibmesa'):
-		print '* fglrx found, exporting: LD_PRELOAD=/usr/lib/fglrx/libGL.so.1.2.xlibmesa'
-		return 'LD_PRELOAD=/usr/lib/fglrx/libGL.so.1.2.xlibmesa '
-	else:
-		return ''
+	
 	for x in fglrx_locations:
 		if os.path.exists(location):
 			print '* fglrx found, exporting: LD_PRELOAD=' + location + ' '
