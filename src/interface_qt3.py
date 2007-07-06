@@ -22,17 +22,14 @@ def run_wm_slot(act):
         run_wm('kwin')
     elif act == actionXfwm4WM:
         run_wm('xfwm4')
-def options_slot(act):
-    if act == actionIndirectRender:
-        page = 'indirect rendering'
-    elif act == actionLooseBinding:
-        page = 'loose binding'
-    if int(get_setting('compiz options', page)):
-        set_setting('compiz options', page, 0)
-        print '* disabling', page+'...'
-    else:
-        set_setting('compiz options', page, 1)
-        print '* enabling', page+'...'
+def ir_slot(on):
+    set_setting('compiz options', 'indirect rendering', on)
+    print '* indirect rendering is now %s' % bool(on)
+    if active_wm == compiz:
+        start_compiz()
+def lb_slot(on):
+    set_setting('compiz options', 'loose binding', on)
+    print '* loose binding is now %s' % bool(on)
     if active_wm == compiz:
         start_compiz()
 def run_wd_slot(act):
@@ -59,23 +56,22 @@ class SystrayIcon(QLabel):
         XDefaultScreenOfDisplay = libX11.XDefaultScreenOfDisplay
         XDefaultScreenOfDisplay.argtypes = [c.c_void_p]
         XDefaultScreenOfDisplay.restype = c.c_void_p
-        
+
         XScreenNumberOfScreen = libX11.XScreenNumberOfScreen
         XScreenNumberOfScreen.argtypes = [c.c_void_p]
-        
+
         XInternAtom = libX11.XInternAtom
         XInternAtom.argtypes = [c.c_void_p, c.c_char_p, c.c_int]
-        
+
         XGrabServer = libX11.XGrabServer
         XGrabServer.argtypes = [c.c_void_p]
-        
+
         XGetSelectionOwner = libX11.XGetSelectionOwner
         XGetSelectionOwner.argtypes = [c.c_void_p, c.c_int]
-        
+
         XSelectInput = libX11.XSelectInput
         XSelectInput.argtypes = [c.c_void_p, c.c_int, c.c_long]
-        
-        
+
         XUngrabServer = libX11.XUngrabServer
         XUngrabServer.argtypes = [c.c_void_p]
         
@@ -112,8 +108,8 @@ class SystrayIcon(QLabel):
         if managerWin != 0:
             # set StructureNotifyMask (1L << 17)
             XSelectInput(dpy, managerWin, 1L << 17)
-        XUngrabServer(dpy);
-        XFlush(dpy);
+        XUngrabServer(dpy)
+        XFlush(dpy)
         if managerWin != 0:
             # send "SYSTEM_TRAY_OPCODE_REQUEST_DOCK to managerWin
             k = data()
@@ -130,7 +126,7 @@ class SystrayIcon(QLabel):
                                      XInternAtom(dpy, "_NET_SYSTEM_TRAY_OPCODE", 0), 32, k)
             XSendEvent(dpy, managerWin, 0, 0, c.addressof(ev))
             XSync(dpy, 0)
-        self.setPixmap(QPixmap('/usr/share/pixmaps/fusion-icon.png'))
+        self.setPixmap(QPixmap('../icons/hicolor/22x22/apps/fusion-icon.png'))
         self.setAlignment(Qt.AlignHCenter)
         QToolTip.add(self, "Compiz Fusion Icon")
 
@@ -140,9 +136,10 @@ class SystrayIcon(QLabel):
             if id == menuSettings:
                 Popen(['ccsm'])
             elif id == menuEmerald:
-                etm_menu_activate(None)
+                Popen(['emerald-theme-manager'])
             elif id == menuReload:
-                wm_activate(None)
+                print '* reloading window manager...'
+                start_wm()
 
 #Menus
 managerMenu = QPopupMenu()
@@ -171,11 +168,11 @@ if active_wm == 'xfwm4':
 QObject.connect(groupWM, SIGNAL("selected(QAction*)"), run_wm_slot)
 if compiz == '':
     actionCompizWM.setEnabled(False)
-if not is_is_installed('metacity'):
+if not is_installed('metacity'):
     actionMetacityWM.setEnabled(False)
-if not is_is_installed('kwin'):
+if not is_installed('kwin'):
     actionKwinWM.setEnabled(False)
-if not is_is_installed('xfwm4'):
+if not is_installed('xfwm4'):
     actionXfwm4WM.setEnabled(False)
 groupWM.addTo(managerMenu)
 
@@ -191,7 +188,8 @@ if always_indirect:
     actionIndirectRender.setEnabled(False)
 if int(get_setting('compiz options', 'loose binding')):
     actionLooseBinding.toggle()
-QObject.connect(groupOptions, SIGNAL("selected(QAction*)"), options_slot)
+QObject.connect(actionIndirectRender, SIGNAL("toggled(bool)"), ir_slot)
+QObject.connect(actionLooseBinding, SIGNAL("toggled(bool)"), lb_slot)
 groupOptions.addTo(optionsMenu)
 
 
@@ -210,11 +208,11 @@ elif decosetting.Value == gwd:
 elif decosetting.Value == kwd:
     actionKDEWD.toggle()
 QObject.connect(groupWD, SIGNAL("selected(QAction*)"), run_wd_slot)
-if not is_is_installed('emerald'):
+if not is_installed('emerald'):
     actionEmeraldWD.setEnabled(False)
-if not is_is_installed('gtk-window-decorator'):
+if not is_installed('gtk-window-decorator'):
     actionGTKWD.setEnabled(False)
-if not is_is_installed('kde-window-decorator'):
+if not is_installed('kde-window-decorator'):
     actionKDEWD.setEnabled(False)
 groupWD.addTo(decoratorMenu)
 
