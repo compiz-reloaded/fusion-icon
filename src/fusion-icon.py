@@ -4,15 +4,15 @@
 import os, sys
 
 def help():
-	print 'Usage: fusion-icon [options] [frontend]'
+	print 'Usage: fusion-icon [options] [interface]'
 	print
 	print '  --help     Display this text'
 	print '  --reset    Remove fusion-icon configuration file'
 	print
 	print 'Frontends:'
-	print '  --gtk      Use the pygtk 2.10 frontend'
-	print '  --qt3      Use the PyQt3 frontend (currently not installed by default)'
-	print '  --qt4      Use the PyQt4 frontend'
+	print '  --gtk      Use the pygtk 2.10 interface'
+	print '  --qt3      Use the PyQt3 interface (currently not installed by default)'
+	print '  --qt4      Use the PyQt4 interface'
 	sys.exit(0)
 
 def reset():
@@ -33,8 +33,9 @@ def reset():
 			
 def import_gtk(die_on_error=False):
 	try:
-		import pygtk, interface_gtk
 		print '* Using the GTK Interface'
+		import pygtk, interface_gtk
+
 
 	except ImportError:
 		print '* Error: failed to import pygtk'
@@ -44,8 +45,9 @@ def import_gtk(die_on_error=False):
 		
 def import_qt4(die_on_error=False):
 	try:
-		import PyQt4, interface_qt4
 		print '* Using the Qt4 Interface'
+		import PyQt4, interface_qt4
+
 	
 	except ImportError:
 		print '* Error: failed to import PyQt4'
@@ -55,8 +57,9 @@ def import_qt4(die_on_error=False):
 			
 def import_qt3(die_on_error=False):
 	try:
+		print '* Using the Qt3 Interface'
 		import qt, ctypes, interface_qt3
-		print '* Using the Qt4 Interface'
+
 	
 	except ImportError:
 		print '* Error: failed to import PyQt3'

@@ -7,6 +7,8 @@ from subprocess import Popen
 from time import time
 
 # Define variables
+fglrx_locations=('/usr/lib/fglrx/libGL.so.1.2.xlibmesa', '/opt/mesa-xgl/lib/libGL.so.1.2')
+
 apps = ('compiz.real', 'ccsm', 'compiz', 'gtk-window-decorator', 'kde-window-decorator', 'emerald', 'metacity', 'kwin', 'xfwm4') 
 wmlist = ('compiz', 'xfwm4', 'kwin', 'metacity')
 
@@ -107,19 +109,24 @@ def env_indirect():
 def env_fglrx():
 	'Determines if we are using fglrx'
 
-	# Currently broken
 	if path.exists('/usr/lib/fglrx/libGL.so.1.2.xlibmesa'):
 		print '* fglrx found, exporting: LD_PRELOAD=/usr/lib/fglrx/libGL.so.1.2.xlibmesa'
 		return 'LD_PRELOAD=/usr/lib/fglrx/libGL.so.1.2.xlibmesa '
 	else:
 		return ''
+	for x in fglrx_locations:
+		if os.path.exists(location):
+			print '* fglrx found, exporting: LD_PRELOAD=' + location + ' '
+			return 'LD_PRELOAD=' + location + ' '
+	# We've not found anything
+	return ''
 	
 def env_nvidia():
 	'Determines if we are using nvidia'
 
 	if not getoutput('xdpyinfo 2>/dev/null|grep NV-GLX') == '':
-		print '* nvidia found, exporting: __GL_YIELD=nothing '
-		return '__GL_YIELD=nothing '
+		print '* nvidia found, exporting: __GL_YIELD="NOTHING" '
+		return '__GL_YIELD="NOTHING" '
 	else:
 		return ''
 	
@@ -205,18 +212,15 @@ if is_installed('compiz.real'):
 kde = gnome = xfce4 = False
 if is_running('gnome-session'):
 	gnome = True
-	frontend = 'gtk'
 	print '* Gnome is running'
-
-elif is_running('dcop'):
-	kde = True
-	frontend = 'qt4'
-	print '* KDE is running'
 
 elif is_running('xfce4-session'):
 	xfce4 = True
-	frontend = 'gtk'
 	print '* XFCE4 is running'
+	
+elif is_running('dcop'):
+	kde = True
+	print '* KDE is running'
 
 active_decorator = get_decorator()
 
