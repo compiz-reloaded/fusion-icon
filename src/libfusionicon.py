@@ -213,7 +213,7 @@ elif is_running('xfce4-session'):
 	xfce4 = True
 	print '* XFCE4 is running'
 	
-elif is_running('kdesktop') or is_running('startkde	'):
+elif is_running('kdesktop') or is_running('startkde'):
 	kde = True
 	print '* KDE is running'
 
