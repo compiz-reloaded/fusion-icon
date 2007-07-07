@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # Author(s): crdlb
-import pygtk, gobject
+import pygtk
 pygtk.require('2.0')
 import gtk
 from libfusionicon import *
@@ -23,24 +23,28 @@ def wm_activate(widget):
 
 def compiz_menu_activate(widget): 
 	if compiz_wm.active and initialized:
+		set_old_wm()
 		set_setting('window manager', 'active wm', compiz)
 		print '* switching to Compiz...'
 		start_wm()
 	
 def kwin_menu_activate(widget): 
 	if kwin_wm.active and initialized:
+		set_old_wm()
 		set_setting('window manager', 'active wm', 'kwin')
 		print '* switching to Kwin...'
 		start_wm()
 
 def metacity_menu_activate(widget): 
 	if metacity_wm.active and initialized:
+		set_old_wm()
 		set_setting('window manager', 'active wm', 'metacity')
 		print '* switching to Metacity...'
 		start_wm()
 
 def xfwm4_menu_activate(widget): 
 	if xfwm4_wm.active and initialized:
+		set_old_wm()
 		set_setting('window manager', 'active wm', 'xfwm4')
 		print '* switching to Xfwm4...'
 		start_wm()
@@ -49,7 +53,7 @@ def emerald_menu_activate(widget):
 	if initialized and emerald_decorator.active:
 		active_wm = get_setting('window manager', 'active wm')
 		if active_wm == compiz:
-			system('killall kde-window-decorator gtk-window-decorator 2>/dev/null')
+			system('killall gtk-window-decorator kde-window-decorator 2>/dev/null')
 			sleep(1)
 		set_decorator(emerald)
 
