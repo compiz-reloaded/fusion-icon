@@ -2,18 +2,19 @@
 # Compiz Fusion Icon
 from os import system, environ, path, rename
 from sys import exit, argv
-from time import time
+from time import time, sleep
 
 def help():
 	print 'Usage: fusion-icon [action|interface]'
 	print
-	print '  --help     Display this text'
-	print '  --reset    Remove fusion-icon configuration file'
+	print '  --help	Display this text'
+	print '  --reset	Remove fusion-icon configuration file'
+	print '  --sleep n	Sleep for n seconds before launching'
 	print
 	print 'Interfaces:'
-	print '  --gtk      Use the pygtk 2.10 interface'
-	print '  --qt3      Use the PyQt3 interface (currently not installed by default)'
-	print '  --qt4      Use the PyQt4 interface'
+	print '  --gtk		Use the pygtk 2.10 interface'
+	print '  --qt3		Use the PyQt3 interface'
+	print '  --qt4		Use the PyQt4 interface'
 	exit(0)
 
 def reset():
@@ -58,6 +59,15 @@ if '--help' in argv or '-h' in argv:
 
 if '--reset' in argv:
 	reset()
+
+#If there is a positive integer following '--sleep' in argv, sleep for that time
+try:
+	if '--sleep' in argv and int(argv[argv.index('--sleep') + 1]) > 0:
+		sleep(int(argv[argv.index('--sleep') + 1]))
+
+except ValueError, IOError:
+	print '* Error: invalid sleep amount'
+	exit(1)
 
 # Remove the need to import libfusionicon.py
 # We'll detect kde right here
