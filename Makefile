@@ -19,7 +19,7 @@ install:
 	install src/fusion-icon.py $(DESTDIR)$(prefix)/share/fusion-icon/
 	for interface in $(interfaces); do install src/interface_$$interface.py $(DESTDIR)$(prefix)/share/fusion-icon/; done
 	mkdir -p $(DESTDIR)$(prefix)/bin/
-	cd $(DESTDIR)$(prefix)/share/fusion-icon; ln -sf fusion-icon.py ../../bin/fusion-icon
+	cd $(DESTDIR)$(prefix)/bin; ln -sf ../share/fusion-icon/fusion-icon.py fusion-icon
 	for dir in $(dirs); do mkdir -p $(DESTDIR)$(prefix)/share/icons/hicolor/$$dir/apps/ && install images/$$dir/fusion-icon.png $(DESTDIR)$(prefix)/share/icons/hicolor/$$dir/apps/; done
 	mkdir -p $(DESTDIR)$(prefix)/share/icons/hicolor/scalable/apps/
 	install images/scalable/fusion-icon.svg $(DESTDIR)$(prefix)/share/icons/hicolor/scalable/apps/ 
