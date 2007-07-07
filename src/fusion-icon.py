@@ -17,10 +17,11 @@ def help():
 	exit(0)
 
 def reset():
-	#cut-and-pasted from libfusionicon to avoid a full load for --reset 
-	config_folder = environ.get('XDG_CONFIG_HOME', path.join(environ.get('HOME'), '.config'))  
+	#cut-and-pasted from libfusionicon to avoid a full load for --reset
+	config_folder = environ.get('XDG_CONFIG_HOME', path.join(environ.get('HOME'), '.config'))
 	config_file = path.join(config_folder, 'fusion-icon')
 	print '* Configuration file (' + config_file + ') being reset'
+
 	try:
 		if path.exists(config_file):
 			config_backup = path.join(config_folder, 'fusion-icon.backup.' + str(int(time())))
@@ -29,35 +30,35 @@ def reset():
 		else:
 			print '... no configuration found'
 		print '* Configuration reset'
-			
+
 	except:
 		print '* Error: configuration reset failed'
 		exit(1)
-		
+
 	exit(0)
 	
 interfaces={'gtk':('GTK', ('pygtk', 'interface_gtk')),
 	'qt4':('Qt4', ('PyQt4', 'interface_qt4')),
-	'qt3':('Qt3', ('qt','ctypes', 'interface_qt3'))}
+	'qt3':('Qt3', ('qt', 'ctypes', 'interface_qt3'))}
 
 def int_import(interface):
 	try:
 		print '* Using the ' + interfaces[interface][0] + ' Interface'
 		for module in interfaces[interface][1]:
 			exec('import ' + module)
-			
+
 	except ImportError:
 		print '* Error: failed to import: ' + ', '.join(interfaces[interface][1])
 		exit(1)
 
 ## Detect and run args
 # If we're running --help or --reset, don't progress past it
-if '--help' in argv or '-h' in argv	:
+if '--help' in argv or '-h' in argv:
 	help()
 
 if '--reset' in argv:
 	reset()
-	
+
 # Remove the need to import libfusionicon.py
 # We'll detect kde right here
 kde = False
@@ -70,7 +71,7 @@ if '--qt3' in argv:
 
 else:
 	if (kde and not '--gtk' in argv) or '--qt4' in argv:
-		int_import('qt4')	
-	
+		int_import('qt4')
+
 	else:
 		int_import('gtk')

@@ -7,7 +7,7 @@ from subprocess import Popen
 from time import time, sleep
 
 # Define variables
-fglrx_locations=('/usr/lib/fglrx/libGL.so.1.2.xlibmesa', '/opt/mesa-xgl/lib/libGL.so.1.2')
+fglrx_locations = ('/usr/lib/fglrx/libGL.so.1.2.xlibmesa', '/opt/mesa-xgl/lib/libGL.so.1.2')
 
 apps = ('compiz.real', 'ccsm', 'compiz', 'gtk-window-decorator', 'kde-window-decorator', 'emerald', 'metacity', 'kwin', 'xfwm4') 
 wmlist = ('compiz', 'xfwm4', 'kwin', 'metacity')
@@ -44,7 +44,7 @@ def default_decorator():
 	# Use emerald otherwise
 	elif is_installed('emerald'):
 		decorator = emerald
-		
+
 	# Use what is available
 	elif is_installed('gtk-window-decorator'):
 		decorator = gwd
@@ -71,7 +71,7 @@ def fallback_wm():
 
 	elif is_installed('metacity') and gnome and not kde and not xfce4:
 		wm = 'metacity'
-		
+
 	elif is_installed('xfwm4') and not kde and not gnome and xfce4:
 		wm = 'xfwm4'
 
@@ -89,14 +89,14 @@ def env_intel():
 		return 'INTEL_BATCH=1 '
 	else:
 		return ''
-	
+
 def is_always_indirect():
 	'Determines if we are always using indirect rendering'
 
 	if int(getoutput('glxinfo 2>/dev/null | grep GLX_EXT_texture_from_pixmap -c')) < 3:
 		if int(getoutput('LIBGL_ALWAYS_INDIRECT=1 glxinfo 2>/dev/null | grep GLX_EXT_texture_from_pixmap -c')) == 3:
 			return True
-			
+
 	else:
 		return False
 	
@@ -109,10 +109,10 @@ def env_indirect():
 		return 'LIBGL_ALWAYS_INDIRECT=1 '
 	else:
 		return ''
-		
+
 def env_fglrx():
 	'Determines if we are using fglrx'
-	
+
 	for location in fglrx_locations:
 		if path.exists(location):
 			print '* fglrx found, exporting: LD_PRELOAD=' + location + ' '
@@ -146,7 +146,7 @@ def start_wm():
 		sleep(0.5)
 
 	if active_wm == compiz:
-		start_compiz()		
+		start_compiz()
 
 	else:
 		print "* Starting:", active_wm
@@ -303,6 +303,6 @@ for wm in wmlist:
 		break # Break as we've found a running wm
 	else:
 		start_wm_bool = True
-	
+
 if start_wm_bool:
 	start_wm()

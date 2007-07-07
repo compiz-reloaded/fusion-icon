@@ -7,7 +7,7 @@ from libfusionicon import *
 from time import sleep
 
 # Compiz-Manager Menu Functions
-def popup_menu(widget, button, time, data = None):
+def popup_menu(widget, button, time, data=None):
 	data.show_all()
 	data.popup(None, None, gtk.status_icon_position_menu, 3, time, icon)
 
@@ -21,28 +21,28 @@ def wm_activate(widget):
 	print '* reloading window manager...'
 	start_wm()
 
-def compiz_menu_activate(widget): 
+def compiz_menu_activate(widget):
 	if compiz_wm.active and initialized:
 		set_old_wm()
 		set_setting('window manager', 'active wm', compiz)
 		print '* switching to Compiz...'
 		start_wm()
 	
-def kwin_menu_activate(widget): 
+def kwin_menu_activate(widget):
 	if kwin_wm.active and initialized:
 		set_old_wm()
 		set_setting('window manager', 'active wm', 'kwin')
 		print '* switching to Kwin...'
 		start_wm()
 
-def metacity_menu_activate(widget): 
+def metacity_menu_activate(widget):
 	if metacity_wm.active and initialized:
 		set_old_wm()
 		set_setting('window manager', 'active wm', 'metacity')
 		print '* switching to Metacity...'
 		start_wm()
 
-def xfwm4_menu_activate(widget): 
+def xfwm4_menu_activate(widget):
 	if xfwm4_wm.active and initialized:
 		set_old_wm()
 		set_setting('window manager', 'active wm', 'xfwm4')
@@ -64,7 +64,7 @@ def kwd_menu_activate(widget):
 			sleep(1)
 		set_decorator(kwd)
 
-def gwd_menu_activate(widget): 
+def gwd_menu_activate(widget):
 	if initialized and gwd_decorator.active:
 		if active_wm == compiz:
 			system('killall emerald kde-window-decorator 2>/dev/null')
