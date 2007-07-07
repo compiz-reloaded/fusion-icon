@@ -30,36 +30,20 @@ def reset():
 		
 	except:
 		print '* Error: configuration reset failed'
-			
-def import_gtk(die_on_error=False):
-	try:
-		print '* Using the GTK Interface'
-		import pygtk, interface_gtk
-	
-	except ImportError:
-		print '* Error: failed to import pygtk'
-		if die_on_error:
-			sys.exit(1)
 		
-def import_qt4(die_on_error=False):
-	try:
-		print '* Using the Qt4 Interface'
-		import PyQt4, interface_qt4
-		
-	except ImportError:
-		print '* Error: failed to import PyQt4'
-		if die_on_error:
-			sys.exit(1)
-			
-def import_qt3(die_on_error=False):
-	try:
-		print '* Using the Qt3 Interface'
-		import qt, ctypes, interface_qt3
+interfaces={'gtk':('GTK', ('pygtk', 'interface_gtk')),
+	'qt4':('Qt4', ('PyQt4', 'interface_qt4')),
+	'qt3':('Qt3', ('qt', 'ctypes', 'interface_qt3'))}
 
+def int_import(interface):
+	try:
+		print '* Using the ' + interfaces[interface][0] + ' Interface'
+		for x in interfaces[interface][1]:
+			exec('import ' + x)
+			
 	except ImportError:
-		print '* Error: failed to import PyQt3'
-		if die_on_error:
-			sys.exit(1)
+		print '* Error: failed to import: ' + "".join(interfaces[interface][1])
+		sys.exit(1)
 
 ## Detect and run args
 # If we're running --help or --reset, don't progress past it
@@ -69,32 +53,19 @@ if '--help' in sys.argv or '-h' in sys.argv	:
 if '--reset' in sys.argv:
 	reset()
 	
-# Passed help and reset, import libfusionicon
-from libfusionicon import *
+# Remove the need to import libfusionicon.py
+# We'll detect kde right here
+kde = False
+if os.system('pgrep kdesktop 1>/dev/null') == 0 or os.system('pgrep startkde 1>/dev/null') == 0:
+	kde = True
 
-# Passed --reset, so either use what's specified, or use autodetection
-interface = ''
-if '--gtk' in sys.argv:
-	interface = 'gtk'
-elif '--qt4' in sys.argv:
-	interface = 'qt4'
-elif '--qt3' in sys.argv:
-	interface = 'qt3'
+# Use what's specified, or use autodetection
+if '--qt3' in sys.argv:
+	int_import('qt3')
 
-if interface == '':
-	if gnome or xfce4:
-		interface = 'gtk'
-	elif kde:
-		interface = 'qt4'
-	else:
-		interface = 'gtk'
-
-if interface == 'gtk':
-	import_gtk(True)	
-elif interface == 'qt4':
-	import_qt4(True)
-elif interface == 'qt3':
-	import_qt3(True)
 else:
-	print '*** Failed autodetection, you must be using an unsupported DE. (Gnome, KDE, XFCE4 are supported)'
-	sys.exit(1)
+	if (kde and not '--gtk' in sys.argv) or '--qt4' in sys.argv:
+		int_import('qt4')	
+	
+	else:
+		int_import('gtk')
