@@ -15,6 +15,7 @@ def reload_wm():
     start_wm()
 def run_wm(str):
     if get_setting('window manager', 'active wm') != str:
+        set_old_wm()
         set_setting('window manager', 'active wm', str)
         print '* switching to', str,'...'
         start_wm()
@@ -90,7 +91,7 @@ actionIR = SysTray.optionsMenu.addAction("Indirect Rendering",toggleIR)
 actionIR.setCheckable(True)
 actionLB = SysTray.optionsMenu.addAction("Loose Binding",toggleLB)
 actionLB.setCheckable(True)
-if int(get_setting('compiz options', 'indirect rendering')):
+if indirect_rendering:
     actionIR.setChecked(True)
 if always_indirect:
     actionIR.setEnabled(False)

@@ -10,6 +10,7 @@ app = QApplication(sys.argv)
 # Defs
 def run_wm(str):
     if get_setting('window manager', 'active wm') != str:
+        set_old_wm()
         set_setting('window manager', 'active wm', str)
         print '* switching to', str+'...'
         start_wm()
