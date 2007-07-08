@@ -170,11 +170,11 @@ QObject.connect(groupWM, SIGNAL("selected(QAction*)"), run_wm_slot)
 if compiz == '':
     actionCompizWM.setEnabled(False)
 if not is_installed('metacity'):
-    actionMetacityWM.setEnabled(False)
+    actionMetacityWM.setVisible(False)
 if not is_installed('kwin'):
-    actionKwinWM.setEnabled(False)
+    actionKwinWM.setVisible(False)
 if not is_installed('xfwm4'):
-    actionXfwm4WM.setEnabled(False)
+    actionXfwm4WM.setVisible(False)
 groupWM.addTo(managerMenu)
 
 #Options Menu
@@ -212,9 +212,9 @@ QObject.connect(groupWD, SIGNAL("selected(QAction*)"), run_wd_slot)
 if not is_installed('emerald'):
     actionEmeraldWD.setEnabled(False)
 if not is_installed('gtk-window-decorator'):
-    actionGTKWD.setEnabled(False)
+    actionGTKWD.setVisible(False)
 if not is_installed('kde-window-decorator'):
-    actionKDEWD.setEnabled(False)
+    actionKDEWD.setVisible(False)
 groupWD.addTo(decoratorMenu)
 
 # Main Menu
