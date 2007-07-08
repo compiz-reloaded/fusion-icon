@@ -127,7 +127,7 @@ class SystrayIcon(QLabel):
                                      XInternAtom(dpy, "_NET_SYSTEM_TRAY_OPCODE", 0), 32, k)
             XSendEvent(dpy, managerWin, 0, 0, c.addressof(ev))
             XSync(dpy, 0)
-        self.setPixmap(QPixmap('../icons/hicolor/22x22/apps/fusion-icon.png'))
+        self.setPixmap(QPixmap(sys.path[0] + '/../icons/hicolor/22x22/apps/fusion-icon.png'))
         self.setAlignment(Qt.AlignHCenter)
         QToolTip.add(self, "Compiz Fusion Icon")
 

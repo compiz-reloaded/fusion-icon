@@ -59,7 +59,7 @@ def toggleKWD():
 #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Plastique'))
 app = QtGui.QApplication(sys.argv)
 
-SysTray = QtGui.QSystemTrayIcon(QtGui.QIcon('../icons/hicolor/22x22/apps/fusion-icon.png'))
+SysTray = QtGui.QSystemTrayIcon(QtGui.QIcon(sys.path[0] + '/../icons/hicolor/22x22/apps/fusion-icon.png'))
 SysTray.setToolTip("Compiz Fusion Icon")
 
 active_wm = get_setting('window manager', 'active wm')
