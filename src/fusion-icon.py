@@ -103,8 +103,9 @@ except IOError:
 # Remove the need to import libfusionicon.py
 # We'll detect kde right here
 kde = False
-if os.system('pgrep kdeinit 1>/dev/null') == 0 or os.system('pgrep startkde 1>/dev/null') == 0:
-	kde = True
+if os.system('pgrep gnome-session 1>/dev/null') != 0 and os.system('pgrep xfce4-session 1>/dev/null') != 0:
+	if os.system('pgrep kdeinit 1>/dev/null') == 0 or os.system('pgrep startkde 1>/dev/null') == 0:
+		kde = True
 
 # Use what's specified, or use autodetection
 choose_interface()
