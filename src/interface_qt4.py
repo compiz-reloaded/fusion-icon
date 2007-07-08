@@ -7,9 +7,9 @@ from libfusionicon import *
 
 #Defs
 def open_ccsm():
-    Popen(['ccsm'])
+    subprocess.Popen(['ccsm'])
 def open_emeraldthemes():
-    Popen(['emerald-theme-manager'])
+    subprocess.Popen(['emerald-theme-manager'])
 def reload_wm():
     print '* Reloading Window Manager ...'
     start_wm()
@@ -45,13 +45,13 @@ def toggleLB():
     if get_setting('window manager', 'active wm') == compiz:
         reload_wm()
 def toggleEmerald():
-    system('killall kde-window-decorator gtk-window-decorator 2>/dev/null')
+    os.system('killall kde-window-decorator gtk-window-decorator 2>/dev/null')
     set_decorator(emerald)
 def toggleGWD():
-    system('killall kde-window-decorator emerald 2>/dev/null')
+    os.system('killall kde-window-decorator emerald 2>/dev/null')
     set_decorator(gwd)
 def toggleKWD():
-    system('killall emerald gtk-window-decorator 2>/dev/null')
+    os.system('killall emerald gtk-window-decorator 2>/dev/null')
     set_decorator(kwd)
 
 #Run Menu
@@ -128,4 +128,3 @@ SysTray.menu.addAction("Quit",app.quit)
 SysTray.setContextMenu(SysTray.menu)
 SysTray.show()
 app.exec_()
-

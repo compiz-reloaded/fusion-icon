@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # Author(s): crdlb, nesl247
-import ConfigParser, compizconfig
-from commands import getoutput
-from os import mkdir, system, popen, path, environ, rename
-from subprocess import Popen
-from time import time, sleep
+import ConfigParser, compizconfig, commands, os, subprocess, time
 
 # Define variables
 fglrx_locations = ('/usr/lib/fglrx/libGL.so.1.2.xlibmesa', '/opt/mesa-xgl/lib/libGL.so.1.2')
@@ -20,7 +16,7 @@ decorators = (gwd, kwd, emerald)
 
 # Defining functions
 def is_running(app):
-	if system('pgrep ' + app + ' 1>/dev/null') == 0:
+	if os.system('pgrep ' + app + ' 1>/dev/null') == 0:
 		return True
 	else:
 		return False
@@ -84,7 +80,7 @@ def fallback_wm():
 def env_intel():
 	'Determines if we are using intel'
 
-	if not getoutput('xvinfo 2>/dev/null|grep Intel') == '':
+	if not commands.getoutput('xvinfo 2>/dev/null|grep Intel') == '':
 		print '* Intel found, exporting: INTEL_BATCH=1'
 		return 'INTEL_BATCH=1 '
 	else:
@@ -93,8 +89,8 @@ def env_intel():
 def is_always_indirect():
 	'Determines if we are always using indirect rendering'
 
-	if int(getoutput('glxinfo 2>/dev/null | grep GLX_EXT_texture_from_pixmap -c')) < 3:
-		if int(getoutput('LIBGL_ALWAYS_INDIRECT=1 glxinfo 2>/dev/null | grep GLX_EXT_texture_from_pixmap -c')) == 3:
+	if int(commands.getoutput('glxinfo 2>/dev/null | grep GLX_EXT_texture_from_pixmap -c')) < 3:
+		if int(commands.getoutput('LIBGL_ALWAYS_INDIRECT=1 glxinfo 2>/dev/null | grep GLX_EXT_texture_from_pixmap -c')) == 3:
 			return True
 
 	else:
@@ -114,7 +110,7 @@ def env_fglrx():
 	'Determines if we are using fglrx'
 
 	for location in fglrx_locations:
-		if path.exists(location):
+		if os.path.exists(location):
 			print '* fglrx found, exporting: LD_PRELOAD=' + location + ' '
 			return 'LD_PRELOAD=' + location + ' '
 	# We've not found anything
@@ -123,7 +119,7 @@ def env_fglrx():
 def env_nvidia():
 	'Determines if we are using nvidia'
 
-	if not getoutput('xdpyinfo 2>/dev/null|grep NV-GLX') == '':
+	if not commands.getoutput('xdpyinfo 2>/dev/null|grep NV-GLX') == '':
 		print '* nvidia found, exporting: __GL_YIELD="NOTHING" '
 		return '__GL_YIELD="NOTHING" '
 	else:
@@ -142,15 +138,15 @@ def start_wm():
 	print old_wm
 	if (old_wm == 'xfwm4' and active_wm == compiz) or active_wm == 'xfwm4':
 		print '* killing all WMs to work around xfwm4\'s brokenness'
-		system('killall ' + ' '.join(wmlist) + ' 2>/dev/null')
-		sleep(0.5)
+		os.system('killall ' + ' '.join(wmlist) + ' 2>/dev/null')
+		time.sleep(0.5)
 
 	if active_wm == compiz:
 		start_compiz()
 
 	else:
 		print "* Starting:", active_wm
-		Popen(active_wm + ' --replace', shell=True)
+		subprocess.Popen(active_wm + ' --replace', shell=True)
 
 def start_compiz():
 	env_variables = get_env()
@@ -167,7 +163,7 @@ def start_compiz():
 
 	run_compiz = env_variables + compiz + ' --replace --sm-disable --ignore-desktop-hints ccp' + arg_indirect_rendering + arg_loose_binding
 	print '* Starting:', run_compiz
-	Popen(run_compiz, shell=True)
+	subprocess.Popen(run_compiz, shell=True)
 
 def set_old_wm():
 	'Sets global old_wm variable to the current window manager'
@@ -214,7 +210,7 @@ decosetting = decoplugin.Display['command']
 print "* Searching for installed applications..."
 apps_installed = []
 for app in apps:
-	if system('which ' + app + ' 2>/dev/null') == 0:
+	if os.system('which ' + app + ' 2>/dev/null') == 0:
 		apps_installed.append(app)
 
 # Check if we're using compiz.real wrapper
@@ -241,15 +237,15 @@ elif is_running('kdeinit') or is_running('startkde'):
 # Variables
 active_decorator = get_decorator()
 old_wm = '' #set to empty string so that initial start_wm() doesn't fail
-config_folder = environ.get('XDG_CONFIG_HOME', path.join(environ.get('HOME'), '.config'))  
-config_file = path.join(config_folder, 'fusion-icon')
+config_folder = os.environ.get('XDG_CONFIG_HOME', os.path.join(os.environ.get('HOME'), '.config'))  
+config_file = os.path.join(config_folder, 'fusion-icon')
 
 # Configuration file setup
-if not path.exists(config_folder):
-	mkdir(config_folder)
+if not os.path.exists(config_folder):
+	os.mkdir(config_folder)
 	create_config_file()
 
-elif not path.exists(config_file):
+elif not os.path.exists(config_file):
 	create_config_file()
 
 # Retrieve configuration from ~/.config/fusion-icon
@@ -265,9 +261,9 @@ try:
 
 except:
 	print '* Configuration file (' + config_file + ') invalid'
-	if path.exists(config_file):
-		config_backup = path.join(config_folder, 'fusion-icon.backup.' + str(int(time())))
-		rename(config_file, config_backup)
+	if os.path.exists(config_file):
+		config_backup = os.path.join(config_folder, 'fusion-icon.backup.' + str(int(time.time())))
+		os.rename(config_file, config_backup)
 		print '... backed up to:', config_backup
 	print '* Generating new configuration file'
 	create_config_file()

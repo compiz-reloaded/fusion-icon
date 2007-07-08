@@ -33,7 +33,7 @@ def lb_slot(on):
     if get_setting('window manager', 'active wm') == compiz:
         start_compiz()
 def run_wd_slot(act):
-    system('killall emerald kde-window-decorator gtk-window-decorator 2>/dev/null')
+    os.system('killall emerald kde-window-decorator gtk-window-decorator 2>/dev/null')
     if act == actionEmeraldWD:
         set_decorator(emerald)
     elif act == actionGTKWD:
@@ -134,9 +134,9 @@ class SystrayIcon(QLabel):
         if e.button() == Qt.RightButton:
             id = contextMenu.exec_loop(e.globalPos())
             if id == menuSettings:
-                Popen(['ccsm'])
+                subprocess.Popen(['ccsm'])
             elif id == menuEmerald:
-                Popen(['emerald-theme-manager'])
+                subprocess.Popen(['emerald-theme-manager'])
             elif id == menuReload:
                 print '* reloading window manager...'
                 start_wm()

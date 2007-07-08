@@ -4,7 +4,7 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 from libfusionicon import *
-from time import sleep
+import time
 
 # Compiz-Manager Menu Functions
 def popup_menu(widget, button, time, data=None):
@@ -12,10 +12,10 @@ def popup_menu(widget, button, time, data=None):
 	data.popup(None, None, gtk.status_icon_position_menu, 3, time, icon)
 
 def configure_menu_activate(widget):
-	Popen(['ccsm'])
+	subprocess.Popen(['ccsm'])
 
 def etm_menu_activate(widget):
-	Popen(['emerald-theme-manager'])
+	subprocess.Popen(['emerald-theme-manager'])
 
 def wm_activate(widget):
 	print '* reloading window manager...'
@@ -53,22 +53,22 @@ def emerald_menu_activate(widget):
 	if initialized and emerald_decorator.active:
 		active_wm = get_setting('window manager', 'active wm')
 		if active_wm == compiz:
-			system('killall gtk-window-decorator kde-window-decorator 2>/dev/null')
-			sleep(1)
+			os.system('killall gtk-window-decorator kde-window-decorator 2>/dev/null')
+			time.sleep(1)
 		set_decorator(emerald)
 
 def kwd_menu_activate(widget):
 	if initialized and kwd_decorator.active:
 		if active_wm == compiz:
-			system('killall emerald gtk-window-decorator 2>/dev/null')
-			sleep(1)
+			os.system('killall emerald gtk-window-decorator 2>/dev/null')
+			time.sleep(1)
 		set_decorator(kwd)
 
 def gwd_menu_activate(widget):
 	if initialized and gwd_decorator.active:
 		if active_wm == compiz:
-			system('killall emerald kde-window-decorator 2>/dev/null')
-			sleep(1)
+			os.system('killall emerald kde-window-decorator 2>/dev/null')
+			time.sleep(1)
 		set_decorator(gwd)
 
 def option_ir_activate(widget):
