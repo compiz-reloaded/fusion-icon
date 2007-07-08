@@ -12,10 +12,10 @@ def popup_menu(widget, button, time, data=None):
 	data.popup(None, None, gtk.status_icon_position_menu, 3, time, icon)
 
 def configure_menu_activate(widget):
-	subprocess.Popen(['ccsm'])
+	subprocess.Popen('ccsm')
 
 def etm_menu_activate(widget):
-	subprocess.Popen(['emerald-theme-manager'])
+	subprocess.Popen('emerald-theme-manager')
 
 def wm_activate(widget):
 	print '* reloading window manager...'

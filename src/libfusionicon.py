@@ -4,22 +4,22 @@ import ConfigParser, compizconfig, commands, os, subprocess, time
 
 # Define variables
 fglrx_locations = ('/usr/lib/fglrx/libGL.so.1.2.xlibmesa', '/opt/mesa-xgl/lib/libGL.so.1.2')
+tfp = 'GLX_EXT_texture_from_pixmap'
 
 apps = ('compiz.real', 'ccsm', 'compiz', 'gtk-window-decorator', 'kde-window-decorator', 'emerald', 'metacity', 'kwin', 'xfwm4') 
-wmlist = ('compiz', 'xfwm4', 'kwin', 'metacity')
+
+wmlist = ['xfwm4', 'kwin', 'metacity'] #add compiz later when it's defined
+wms_to_kill = ['xfwm4', 'kwin']
 
 emerald = 'emerald --replace'
-kwd = 'kde-window-deocrator --replace'
+kwd = 'kde-window-decorator --replace'
 gwd = 'gtk-window-decorator --replace'
 decorators = (gwd, kwd, emerald)
-
 
 # Defining functions
 def is_running(app):
 	if os.system('pgrep ' + app + ' 1>/dev/null') == 0:
 		return True
-	else:
-		return False
 
 def is_installed(app):
 	global app_is_installed
@@ -56,7 +56,7 @@ def default_decorator():
 
 def create_config_file():
 	default_config = open(config_file, 'w')
-	default_config.write('[compiz options]\nindirect rendering = 0\nloose binding = 0\n\n[window manager]\nactive wm = %s' %(compiz))
+	default_config.write('[compiz options]\nindirect rendering = 0\nloose binding = 0\n\n[window manager]\nactive wm = ' + compiz)
 	default_config.close()
 
 def fallback_wm():
@@ -68,7 +68,7 @@ def fallback_wm():
 	elif is_installed('metacity') and gnome and not kde and not xfce4:
 		wm = 'metacity'
 
-	elif is_installed('xfwm4') and not kde and not gnome and xfce4:
+	elif is_installed('xfwm4') and xfce4 and not gnome and not kde:
 		wm = 'xfwm4'
 
 	else:
@@ -80,90 +80,80 @@ def fallback_wm():
 def env_intel():
 	'Determines if we are using intel'
 
-	if not commands.getoutput('xvinfo 2>/dev/null|grep Intel') == '':
+	if xvinfo.count('Intel') > 0:
 		print '* Intel found, exporting: INTEL_BATCH=1'
-		return 'INTEL_BATCH=1 '
-	else:
-		return ''
+		os.environ['INTEL_BATCH'] = '1'
 
 def is_always_indirect():
 	'Determines if we are always using indirect rendering'
 
-	if int(commands.getoutput('glxinfo 2>/dev/null | grep GLX_EXT_texture_from_pixmap -c')) < 3:
-		if int(commands.getoutput('LIBGL_ALWAYS_INDIRECT=1 glxinfo 2>/dev/null | grep GLX_EXT_texture_from_pixmap -c')) == 3:
-			return True
+	if glxinfo.count(tfp) < 3 and indir_glxinfo.count(tfp) == 3:
+		return True
 
-	else:
-		return False
-	
 def env_indirect():
 	'Determines if we are using indirect rendering (wrapping is_always_indirect() so that the check can be used more than once without printing the status text)'
 
 	if is_always_indirect():
 		print '* No GLX_EXT_texture_from_pixmap present with direct rendering context'
 		print '... present with indirect rendering, exporting: LIBGL_ALWAYS_INDIRECT=1'
-		return 'LIBGL_ALWAYS_INDIRECT=1 '
-	else:
-		return ''
+		os.environ['LIBGL_ALWAYS_INDIRECT'] = '1'
+
 
 def env_fglrx():
 	'Determines if we are using fglrx'
 
 	for location in fglrx_locations:
 		if os.path.exists(location):
-			print '* fglrx found, exporting: LD_PRELOAD=' + location + ' '
-			return 'LD_PRELOAD=' + location + ' '
-	# We've not found anything
-	return ''
+			print '* fglrx found, exporting: LD_PRELOAD=' + location
+			os.environ['LD_PRELOAD'] = location
+
 	
 def env_nvidia():
 	'Determines if we are using nvidia'
 
-	if not commands.getoutput('xdpyinfo 2>/dev/null|grep NV-GLX') == '':
+	if xdpyinfo.count('NV-GLX') > 0:
 		print '* nvidia found, exporting: __GL_YIELD="NOTHING" '
-		return '__GL_YIELD="NOTHING" '
-	else:
-		return ''
+		os.environ['__GL_YIELD'] = 'NOTHING'
 	
-def get_env():
-	return env_intel() + env_indirect() + env_fglrx() + env_nvidia()
+def set_env():
+	#Trigger all environment checks
+	env_intel()
+	env_indirect()
+	env_fglrx()
+	env_nvidia()
 
 def start_wm():
 	active_wm = get_setting('window manager', 'active wm')
 	global old_wm
-	# Ugly hack follows because xfwm4 is evil:
-	# 1) we kill the old wm if compiz needs to replace xfwm4
-	#    (so that compiz doesn't fail with a composite manager already running error)
+	# 1) we kill the old wm if compiz needs to replace xfwm4, or kwin (prevent composite manager conflicts)
 	# 2) we kill the old wm if xfwm4 needs to start since it apparently lacks a '--replace' switch
-	print old_wm
-	if (old_wm == 'xfwm4' and active_wm == compiz) or active_wm == 'xfwm4':
-		print '* killing all WMs to work around xfwm4\'s brokenness'
+	if (old_wm in wms_to_kill and active_wm == compiz) or active_wm == 'xfwm4':
 		os.system('killall ' + ' '.join(wmlist) + ' 2>/dev/null')
+		#take a power nap		
 		time.sleep(0.5)
-
+	print '* Starting:', active_wm
+	
 	if active_wm == compiz:
 		start_compiz()
 
 	else:
-		print "* Starting:", active_wm
-		subprocess.Popen(active_wm + ' --replace', shell=True)
+		subprocess.Popen([active_wm, '--replace'])
 
 def start_compiz():
-	env_variables = get_env()
+	#retreive configuration
+	indirect_rendering_arg = loose_binding_arg = ''
 
-	arg_indirect_rendering = arg_loose_binding = ''
-	
 	indirect_rendering = int(get_setting('compiz options', 'indirect rendering'))
 	if indirect_rendering:
-		arg_indirect_rendering = ' --indirect-rendering '
-	
+		indirect_rendering_arg = '--indirect-rendering'
+
 	loose_binding = int(get_setting('compiz options', 'loose binding'))
 	if loose_binding:
-		arg_loose_binding = ' --loose-binding '
-
-	run_compiz = env_variables + compiz + ' --replace --sm-disable --ignore-desktop-hints ccp' + arg_indirect_rendering + arg_loose_binding
-	print '* Starting:', run_compiz
-	subprocess.Popen(run_compiz, shell=True)
+		loose_binding_arg = '--loose-binding'
+	
+	#do it!
+	subprocess.Popen([compiz, '--replace', '--sm-disable', '--ignore-desktop-hints', 'ccp', 
+					indirect_rendering_arg, loose_binding_arg], env=os.environ)
 
 def set_old_wm():
 	'Sets global old_wm variable to the current window manager'
@@ -196,7 +186,7 @@ def set_setting(section, option, value):
 	configuration.write(open(config_file, 'w'))
 
 def get_setting(section, option):
-	'Retrieves a setting via ~/.config/fusion-icon'
+	'Retrieves a setting from ~/.config/fusion-icon'
 	return configuration.get(section, option)
 
 
@@ -219,7 +209,8 @@ if is_installed('compiz.real'):
 	compiz = 'compiz.real'
 elif is_installed('compiz'):
 	compiz = 'compiz'
-	
+wmlist.append(compiz)
+
 # Check whether GNOME or KDE or XFCE4 running
 kde = gnome = xfce4 = False
 if is_running('gnome-session'):
@@ -237,8 +228,21 @@ elif is_running('kdeinit') or is_running('startkde'):
 # Variables
 active_decorator = get_decorator()
 old_wm = '' #set to empty string so that initial start_wm() doesn't fail
-config_folder = os.environ.get('XDG_CONFIG_HOME', os.path.join(os.environ.get('HOME'), '.config'))  
+
+
+if os.environ.has_key('XDG_CONFIG_HOME'):
+	config_folder = os.environ['XDG_CONFIG_HOME']
+else:	
+	config_folder = os.path.join(os.environ['HOME'], '.config')
+
 config_file = os.path.join(config_folder, 'fusion-icon')
+
+#Get environmental variables
+glxinfo = commands.getoutput('glxinfo 2>/dev/null')
+indir_glxinfo = commands.getoutput('LIBGL_ALWAYS_INDIRECT=1 glxinfo 2>/dev/null')
+xvinfo = commands.getoutput('xvinfo 2>/dev/null')
+xdpyinfo = commands.getoutput('xdpyinfo 2>/dev/null')
+set_env()
 
 # Configuration file setup
 if not os.path.exists(config_folder):
@@ -254,7 +258,7 @@ try:
 	configuration = ConfigParser.ConfigParser()
 	configuration.read(config_file)
 
-	# Settings
+	#Validate the file by trying to read all values
 	active_wm = get_setting('window manager', 'active wm')
 	indirect_rendering = int(get_setting('compiz options', 'indirect rendering'))
 	loose_binding = int(get_setting('compiz options', 'loose binding'))
