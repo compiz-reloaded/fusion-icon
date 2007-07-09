@@ -131,7 +131,6 @@ def start_wm():
 		os.system('killall ' + ' '.join(wmlist) + ' 2>/dev/null')
 		#take a power nap		
 		time.sleep(0.5)
-	print '* Starting:', active_wm
 	
 	if active_wm == compiz:
 		start_compiz()
@@ -140,20 +139,18 @@ def start_wm():
 		subprocess.Popen([active_wm, '--replace'])
 
 def start_compiz():
-	#retreive configuration
-	indirect_rendering_arg = loose_binding_arg = ''
 
-	indirect_rendering = int(get_setting('compiz options', 'indirect rendering'))
-	if indirect_rendering:
-		indirect_rendering_arg = '--indirect-rendering'
-
-	loose_binding = int(get_setting('compiz options', 'loose binding'))
-	if loose_binding:
-		loose_binding_arg = '--loose-binding'
+	compiz_command = [compiz, '--replace', '--sm-disable', '--ignore-desktop-hints', 'ccp']
 	
+	#retreive configuration
+	if int(get_setting('compiz options', 'indirect rendering')):
+		compiz_command.append('--indirect-rendering')
+
+	if int(get_setting('compiz options', 'loose binding')):
+		compiz_command.append('--loose-binding')
+		
 	#do it!
-	subprocess.Popen([compiz, '--replace', '--sm-disable', '--ignore-desktop-hints', 'ccp', 
-					indirect_rendering_arg, loose_binding_arg], env=os.environ)
+	subprocess.Popen(compiz_command)
 
 def set_old_wm():
 	'Sets global old_wm variable to the current window manager'
@@ -164,11 +161,9 @@ def set_old_wm():
 def set_decorator(decorator):
 	'Sets the decorator via libcompizconfig'
 
-	context.Read()
 	context.ProcessEvents()
 	decosetting.Value = decorator
 	print '* Setting decorator to', decosetting.Value
-
 	context.Write()
 		
 def get_decorator():
@@ -191,8 +186,10 @@ def get_setting(section, option):
 
 
 # Open CompizConfig context
-context = compizconfig.Context()
-context.Read()
+try:
+	context = compizconfig.Context(plugins=['decoration'])
+except:
+	context = compizconfig.Context()
 decoplugin = context.Plugins['decoration']
 decosetting = decoplugin.Display['command']
 
