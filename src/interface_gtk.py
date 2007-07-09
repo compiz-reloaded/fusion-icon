@@ -3,13 +3,13 @@
 import pygtk
 pygtk.require('2.0')
 import gtk
-from libfusionicon import *
 import time
+from libfusionicon import *
 
-# Compiz-Manager Menu Functions
-def popup_menu(widget, button, time, data=None):
-	data.show_all()
-	data.popup(None, None, gtk.status_icon_position_menu, 3, time, icon)
+# Fusion-icon Menu Functions
+def show_menu(widget, button, time, menu):
+	menu.show_all()
+	menu.popup(None, None, gtk.status_icon_position_menu, button, time, icon)
 
 def configure_menu_activate(widget):
 	subprocess.Popen('ccsm')
@@ -27,7 +27,7 @@ def compiz_menu_activate(widget):
 		set_setting('window manager', 'active wm', compiz)
 		print '* switching to Compiz...'
 		start_wm()
-	
+
 def kwin_menu_activate(widget):
 	if kwin_wm.active and initialized:
 		set_old_wm()
@@ -89,7 +89,7 @@ def quit_menu_activate(widget):
 	gtk.main_quit()
 
 initialized = False
-active_wm = get_setting('window manager', 'active wm')
+
 ### User Interface ###
 
 # Window Manager
@@ -217,7 +217,7 @@ menu.append(item)
 # Compiz Fusion Icon
 icon = gtk.status_icon_new_from_icon_name('fusion-icon')
 icon.set_tooltip('Compiz Fusion Icon')
-icon.connect('popup-menu', popup_menu, menu)
+icon.connect('popup-menu', show_menu, menu)
 
 initialized = True
 gtk.main()
