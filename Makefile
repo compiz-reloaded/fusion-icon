@@ -9,7 +9,7 @@ interfaces := gtk qt3 qt4
 help:
 	$(info * type 'sudo make install' to install fusion-icon to /usr)
 	$(info ... or use 'sudo make prefix=/path install' to specify a different prefix.)
-	$(info ... by default, all interfaces are installed (gtk, qt3, and qt4). To install with only gtk (for example), use 'sudo make interfaces=gtk install' )
+	$(info ... by default, all interfaces are installed: gtk, qt3, and qt4. For example, To install with only gtk, use 'sudo make interfaces=gtk install' )
 	@echo -n
 	
 install:
