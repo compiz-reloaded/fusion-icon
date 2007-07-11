@@ -116,18 +116,13 @@ try:
 	seconds = int(args[args.index('--sleep') + 1])
 	if seconds > 0:
 		time.sleep(seconds)
-
-except IOError:
-	print '* Error: invalid sleep amount'
-	sys.exit(1)
-
-except ValueError:
-	pass
+except:
+	pass #don't fail, just move on...
 
 # Remove the need to import libfusionicon.py
 # We'll detect kde right here
-if os.environ.has_key('DESKTOP_SESSION'): desktop = os.environ['DESKTOP_SESSION']
-elif os.environ.has_key('KDE_FULL_SESSION'): desktop = 'kde'
+if os.environ.has_key('KDE_FULL_SESSION'): desktop = 'kde'
+elif os.environ.has_key('DESKTOP_SESSION'): desktop = os.environ['DESKTOP_SESSION']
 else: desktop = ''
 
 # Use what's specified, or use autodetection

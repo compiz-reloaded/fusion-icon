@@ -158,9 +158,11 @@ def start_wm():
 	if active_wm == compiz:
 		start_compiz()
 
-	else:
+	elif len(active_wm):
 		subprocess.Popen([active_wm, '--replace'])
-		
+	
+	else:
+		print '* No active WM set; not going to do anything.'
 def start_compiz():
 
 	compiz_command = [compiz, '--replace', '--sm-disable', '--ignore-desktop-hints', 'ccp']
@@ -237,17 +239,17 @@ if is_installed('emerald'): decorators.append(emerald)
 
 # Check whether GNOME or KDE or XFCE4 running
 
-if os.environ.has_key('DESKTOP_SESSION'):
-	desktop = os.environ['DESKTOP_SESSION']
-	print '*', desktop, 'session'
-
-elif os.environ.has_key('GNOME_DESKTOP_SESSION_ID'):
+if os.environ.has_key('GNOME_DESKTOP_SESSION_ID'):
 	desktop = 'gnome'
 	print '* gnome session'
 
 elif os.environ.has_key('KDE_FULL_SESSION'):
 	desktop = 'kde'
 	print '* kde session'
+
+elif os.environ.has_key('DESKTOP_SESSION'):
+	desktop = os.environ['DESKTOP_SESSION']
+	print '*', desktop, 'session'
 
 else:
 	desktop = ''
