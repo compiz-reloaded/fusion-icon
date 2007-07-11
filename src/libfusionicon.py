@@ -1,4 +1,19 @@
 #!/usr/bin/env python
+# This file is part of Fusion-icon.
+
+# Fusion-icon is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# Fusion-icon is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 # Author(s): crdlb, nesl247
 import ConfigParser, compizconfig, commands, os, subprocess, time
 
@@ -14,7 +29,7 @@ wms_to_kill = ['xfwm4', 'kwin']
 emerald = 'emerald --replace'
 kwd = 'kde-window-decorator --replace'
 gwd = 'gtk-window-decorator --replace'
-decorators = (gwd, kwd, emerald)
+decorators = []
 
 # Defining functions
 def is_running(app):
@@ -29,12 +44,12 @@ def default_decorator():
 	'Find the default decorator to use'
 
 	decorator = ''
-	# Use kwd if kde but not gnome
-	if is_installed('kde-window-decorator') and kde and not gnome:
+	# Use kwd if kde
+	if is_installed('kde-window-decorator') and desktop == 'kde':
 		decorator = kwd
 
-	# Use gwd if gnome but not kde
-	elif is_installed('gtk-window-decorator') and gnome and not kde:
+	# Use gwd if gnome
+	elif is_installed('gtk-window-decorator') and desktop == 'gnome':
 		decorator = gwd
 
 	# Use emerald otherwise
@@ -56,19 +71,26 @@ def default_decorator():
 
 def create_config_file():
 	default_config = open(config_file, 'w')
-	default_config.write('[compiz options]\nindirect rendering = 0\nloose binding = 0\n\n[window manager]\nactive wm = ' + compiz)
+	default_config.write(
+		'[compiz options]\n' +
+		'indirect rendering = 0\n' +
+		'loose binding = 0\n' +
+		'\n' +
+		'[window manager]\n' +
+		'active wm = ' + compiz
+	)
 	default_config.close()
 
 def fallback_wm():
 	'Return a fallback window manager'
 
-	if is_installed('kwin') and kde and not gnome and not xfce4:
+	if is_installed('kwin') and desktop == 'kde':
 		wm = 'kwin'
 
-	elif is_installed('metacity') and gnome and not kde and not xfce4:
+	elif is_installed('metacity') and desktop == 'gnome':
 		wm = 'metacity'
 
-	elif is_installed('xfwm4') and xfce4 and not gnome and not kde:
+	elif is_installed('xfwm4') and desktop == 'xfce4':
 		wm = 'xfwm4'
 
 	else:
@@ -101,13 +123,14 @@ def env_indirect():
 
 def env_fglrx():
 	'Determines if we are using fglrx'
-
-	for location in fglrx_locations:
-		if os.path.exists(location):
-			print '* fglrx found, exporting: LD_PRELOAD=' + location
-			os.environ['LD_PRELOAD'] = location
-
 	
+	if xdpyinfo.count('FGLRX'):
+		for location in fglrx_locations:
+			if os.path.exists(location):
+				print '* fglrx found, exporting: LD_PRELOAD=' + location
+				os.environ['LD_PRELOAD'] = location
+				break
+
 def env_nvidia():
 	'Determines if we are using nvidia'
 
@@ -129,7 +152,7 @@ def start_wm():
 	# 2) we kill the old wm if xfwm4 needs to start since it apparently lacks a '--replace' switch
 	if (old_wm in wms_to_kill and active_wm == compiz) or active_wm == 'xfwm4':
 		os.system('killall ' + ' '.join(wmlist) + ' 2>/dev/null')
-		#take a power nap		
+		#take a power nap
 		time.sleep(0.5)
 	
 	if active_wm == compiz:
@@ -137,7 +160,7 @@ def start_wm():
 
 	else:
 		subprocess.Popen([active_wm, '--replace'])
-
+		
 def start_compiz():
 
 	compiz_command = [compiz, '--replace', '--sm-disable', '--ignore-desktop-hints', 'ccp']
@@ -148,8 +171,9 @@ def start_compiz():
 
 	if int(get_setting('compiz options', 'loose binding')):
 		compiz_command.append('--loose-binding')
-		
+	
 	#do it!
+	print "* Executing:", ' '.join(compiz_command)	
 	subprocess.Popen(compiz_command)
 
 def set_old_wm():
@@ -187,7 +211,7 @@ def get_setting(section, option):
 
 # Open CompizConfig context
 try:
-	context = compizconfig.Context(plugins=['decoration'])
+	context = compizconfig.Context(plugins=['decoration'], basic_metadata=True)
 except:
 	context = compizconfig.Context()
 decoplugin = context.Plugins['decoration']
@@ -200,32 +224,36 @@ for app in apps:
 	if os.system('which ' + app + ' 2>/dev/null') == 0:
 		apps_installed.append(app)
 
-# Check if we're using compiz.real wrapper
+# If compiz.real exists (which means that compiz is just a wrapper script), use that.
 compiz = ''
-if is_installed('compiz.real'):
-	compiz = 'compiz.real'
-elif is_installed('compiz'):
-	compiz = 'compiz'
+if is_installed('compiz.real'): compiz = 'compiz.real'
+elif is_installed('compiz'): compiz = 'compiz'
 wmlist.append(compiz)
 
+# Check presence of decorators:
+if is_installed('gtk-window-decorator'): decorators.append(gwd)
+if is_installed('kde-window-decorator'): decorators.append(kwd)
+if is_installed('emerald'): decorators.append(emerald)
+
 # Check whether GNOME or KDE or XFCE4 running
-kde = gnome = xfce4 = False
-if is_running('gnome-session'):
-	gnome = True
-	print '* Gnome is running'
 
-elif is_running('xfce4-session'):
-	xfce4 = True
-	print '* XFCE4 is running'
-	
-elif is_running('kdeinit') or is_running('startkde'):
-	kde = True
-	print '* KDE is running'
+if os.environ.has_key('DESKTOP_SESSION'):
+	desktop = os.environ['DESKTOP_SESSION']
+	print '*', desktop, 'session'
 
-# Variables
+elif os.environ.has_key('GNOME_DESKTOP_SESSION_ID'):
+	desktop = 'gnome'
+	print '* gnome session'
+
+elif os.environ.has_key('KDE_FULL_SESSION'):
+	desktop = 'kde'
+	print '* kde session'
+
+else:
+	desktop = ''
+
 active_decorator = get_decorator()
 old_wm = '' #set to empty string so that initial start_wm() doesn't fail
-
 
 if os.environ.has_key('XDG_CONFIG_HOME'):
 	config_folder = os.environ['XDG_CONFIG_HOME']
@@ -234,7 +262,7 @@ else:
 
 config_file = os.path.join(config_folder, 'fusion-icon')
 
-#Get environmental variables
+#Set environmental variables
 glxinfo = commands.getoutput('glxinfo 2>/dev/null')
 indir_glxinfo = commands.getoutput('LIBGL_ALWAYS_INDIRECT=1 glxinfo 2>/dev/null')
 xvinfo = commands.getoutput('xvinfo 2>/dev/null')
@@ -244,9 +272,8 @@ set_env()
 # Configuration file setup
 if not os.path.exists(config_folder):
 	os.mkdir(config_folder)
-	create_config_file()
 
-elif not os.path.exists(config_file):
+if not os.path.exists(config_file):
 	create_config_file()
 
 # Retrieve configuration from ~/.config/fusion-icon
@@ -261,6 +288,7 @@ try:
 	loose_binding = int(get_setting('compiz options', 'loose binding'))
 
 except:
+	#back it up and make a new one
 	print '* Configuration file (' + config_file + ') invalid'
 	if os.path.exists(config_file):
 		config_backup = os.path.join(config_folder, 'fusion-icon.backup.' + str(int(time.time())))
@@ -271,15 +299,15 @@ except:
 	configuration = ConfigParser.ConfigParser()
 	configuration.read(config_file)
 
-	# Set default settings
+	#get default settings
 	active_wm = get_setting('window manager', 'active wm')
 	indirect_rendering = int(get_setting('compiz options', 'indirect rendering'))
 	loose_binding = int(get_setting('compiz options', 'loose binding'))
 
 if not is_installed(active_wm):
-	print '* ' + active_wm + ' not installed'
+	print '*', active_wm, 'not installed'
 	active_wm = fallback_wm()
-	print '... setting to fallback: ' + active_wm
+	print '... setting to fallback:', active_wm
 
 #Set True if using Xorg AIGLX since the '--indirect-rendering' option has no effect in that situation.
 always_indirect = is_always_indirect()

@@ -1,4 +1,19 @@
 #!/usr/bin/env python
+# This file is part of Fusion-icon.
+
+# Fusion-icon is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# Fusion-icon is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 # Author(s): crdlb
 import pygtk
 pygtk.require('2.0')
@@ -98,7 +113,7 @@ compiz_wm = gtk.RadioMenuItem(label=' Compiz')
 compiz_wm.connect('activate', compiz_menu_activate)
 if active_wm == compiz:
 	compiz_wm.set_active(True)
-if compiz == '':
+if not len(compiz):
 	compiz_wm.set_active(False)
 	compiz_wm.set_sensitive(False)
 wm_menu.append(compiz_wm)

@@ -1,5 +1,19 @@
 #!/usr/bin/env python
-# Compiz Fusion Icon
+# This file is part of Fusion-icon.
+
+# Fusion-icon is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# Fusion-icon is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import os, sys, time
 
 def help():
@@ -13,7 +27,7 @@ def help():
 	print '  --gtk		Use the pygtk 2.10 interface'
 	print '  --qt3		Use the PyQt3 interface'
 	print '  --qt4		Use the PyQt4 interface'
-	sys.exit(0)
+	sys.exit()
 
 def reset():
 	#cut-and-pasted from libfusionicon to avoid a full load for --reset
@@ -39,7 +53,7 @@ def reset():
 		print '* Error: configuration reset failed'
 		sys.exit(1)
 
-	sys.exit(0)
+	sys.exit()
 	
 interfaces={'gtk':('GTK', ('pygtk', 'interface_gtk')),
 			'qt4':('Qt4', ('PyQt4', 'interface_qt4')),
@@ -55,23 +69,29 @@ def import_interface(interface):
 		print '*', e
 		#doesn't work so remove it from the dict
 		del interfaces[interface]
-		print '... Trying anonther interface'
+		print '... Trying another interface'
 		choose_interface()
+	
+	sys.exit()
 
 def choose_interface():
+
+	def has(interface):
+		return interfaces.has_key(interface)
+
 	#handle explicit arguments first:
-	if interfaces.has_key('gtk') and '--gtk' in args: interface = 'gtk'	
-	elif interfaces.has_key('qt4') and '--qt4' in args: interface = 'qt4'
-	elif interfaces.has_key('qt3') and '--qt3' in args: interface = 'qt3'
+	if has('gtk') and '--gtk' in args: interface = 'gtk'	
+	elif has('qt4') and '--qt4' in args: interface = 'qt4'
+	elif has('qt3') and '--qt3' in args: interface = 'qt3'
 	
 	#use qt* for kde; gtk for everything else:
-	elif interfaces.has_key('qt4') and kde: interface = 'qt4'
-	elif interfaces.has_key('qt3') and kde: interface = 'qt3'
-	elif interfaces.has_key('gtk'): interface = 'gtk'
+	elif has('qt4') and desktop == 'kde': interface = 'qt4'
+	elif has('qt3') and desktop == 'kde': interface = 'qt3'
+	elif has('gtk'): interface = 'gtk'
 	
 	#try qt* for non-kde:
-	elif interfaces.has_key('qt4'): interface = 'qt4'
-	elif interfaces.has_key('qt3'): interface = 'qt3'
+	elif has('qt4'): interface = 'qt4'
+	elif has('qt3'): interface = 'qt3'
 	
 	#interfaces is empty
 	else:
@@ -91,21 +111,24 @@ if '--help' in args or '-h' in args:
 if '--reset' in args:
 	reset()
 
-#If there is a positive integer following '--sleep' in argv, sleep for that time
+#If there is a positive integer following '--sleep' in args, sleep for that time
 try:
-	if '--sleep' in args and int(args[args.index('--sleep') + 1]) > 0:
-		time.sleep(int(args[args.index('--sleep') + 1]))
+	seconds = int(args[args.index('--sleep') + 1])
+	if seconds > 0:
+		time.sleep(seconds)
 
 except IOError:
 	print '* Error: invalid sleep amount'
 	sys.exit(1)
 
+except ValueError:
+	pass
+
 # Remove the need to import libfusionicon.py
 # We'll detect kde right here
-kde = False
-if os.system('pgrep gnome-session 1>/dev/null') != 0 and os.system('pgrep xfce4-session 1>/dev/null') != 0:
-	if os.system('pgrep kdeinit 1>/dev/null') == 0 or os.system('pgrep startkde 1>/dev/null') == 0:
-		kde = True
+if os.environ.has_key('DESKTOP_SESSION'): desktop = os.environ['DESKTOP_SESSION']
+elif os.environ.has_key('KDE_FULL_SESSION'): desktop = 'kde'
+else: desktop = ''
 
 # Use what's specified, or use autodetection
 choose_interface()
