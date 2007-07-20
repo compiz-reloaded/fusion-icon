@@ -120,16 +120,20 @@ def env_indirect():
 		print '... present with indirect rendering, exporting: LIBGL_ALWAYS_INDIRECT=1'
 		os.environ['LIBGL_ALWAYS_INDIRECT'] = '1'
 
+def is_xgl():
+	'Determines if we are using Xgl'
+
+	if 'Xgl' in xvinfo:
+		return True
 
 def env_fglrx():
 	'Determines if we are using fglrx'
 	
-	if xdpyinfo.count('FGLRX'):
-		for location in fglrx_locations:
-			if os.path.exists(location):
-				print '* fglrx found, exporting: LD_PRELOAD=' + location
-				os.environ['LD_PRELOAD'] = location
-				break
+	if 'client glx vendor string: ATI' in glxinfo and is_xgl():
+		for location in [l for l in mesa_libgl_locations if os.path.exists(l)]:
+			print '* fglrx found, exporting: LD_PRELOAD=%s' %(location)
+			os.environ['LD_PRELOAD'] = location
+			break
 
 def env_nvidia():
 	'Determines if we are using nvidia'
