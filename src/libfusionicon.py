@@ -18,7 +18,7 @@
 import ConfigParser, compizconfig, commands, os, subprocess, time
 
 # Define variables
-fglrx_locations = ('/usr/lib/fglrx/libGL.so.1.2.xlibmesa', '/opt/mesa-xgl/lib/libGL.so.1.2')
+mesa_libgl_locations = ('/usr/lib/fglrx/libGL.so.1.2.xlibmesa', '/opt/mesa-xgl/lib/libGL.so.1.2')
 tfp = 'GLX_EXT_texture_from_pixmap'
 
 apps = ('compiz.real', 'ccsm', 'compiz', 'gtk-window-decorator', 'kde-window-decorator', 'emerald', 'metacity', 'kwin', 'xfwm4') 
