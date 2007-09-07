@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+# This file is part of Fusion-icon.
+
+# Fusion-icon is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# Fusion-icon is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import os, sys, time
+
+try:
+	import FusionIcon
+
+except ImportError:
+	raise SystemExit(' * Error: the "FusionIcon" module is missing. If you did not install fusion-icon to /usr, you may need to add the appropriate site-packages directory to your PYTHONPATH')
+
+# parse command line
+from FusionIcon.parser import options
+
+if options.reset:	
+	try:
+		from FusionIcon.data import config_file
+		print ' * Configuration file (%s) being reset' %config_file
+
+		if os.path.exists(config_file):
+			config_backup = '%s.backup.%s' %(config_file, time.strftime('%Y%m%d%H%M%S'))
+			os.rename(config_file, config_backup)
+			print ' ... backed up to:', config_backup
+
+		else:
+			print ' ... no configuration file found'
+		
+	except:
+		print ' *** Error: configuration reset failed:'
+		raise SystemExit
+
+	sys.exit()
+
+if options.seconds and 0 < options.seconds <= 60:
+	print ' * Sleeping for %s seconds' %options.seconds
+	time.sleep(options.seconds)
+
+if options.no_interface:
+	# a skeleton interface
+	from FusionIcon.start import init
+	init()
+
+else:
+	from FusionIcon.interface import choose_interface
+	choose_interface(try_first=options.interface)
+
