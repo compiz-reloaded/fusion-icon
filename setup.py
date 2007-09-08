@@ -51,14 +51,13 @@ available_interfaces = {
 #	'qt3': 'FusionIcon.interface_qt3',
 }
 
-if 'interfaces' in os.environ:
- 	for interface in os.environ['interfaces'].split():
-		if interface in available_interfaces:
-			packages.append(available_interfaces[interface])
-else:
-	packages.extend(available_interfaces.values())
+#if 'interfaces' in os.environ:
+# 	for interface in os.environ['interfaces'].split():
+#		if interface in available_interfaces:
+#			packages.append(available_interfaces[interface])
+#else:
 
-
+packages.extend(available_interfaces.values())
 
 
 data_files = [
