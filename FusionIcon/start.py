@@ -26,7 +26,7 @@ def init():
 
 	if not parser_options.no_start:
 		# Do not restart the wm if it's already running
-		if wms.active == wms.old != 'compiz':
+		if wms.active == wms.active == wms.old != 'compiz':
 			#always restart compiz since we can't know compiz was started correctly
 			print ' * %s is already running' %wms[wms.active].label
 		else:
@@ -40,20 +40,19 @@ config.check()
 if not parser_options.force_compiz:
 	if wms.active not in wms:
 		print ' * "%s" not installed' %wms.active
-		wms.active = wms.fallback
-		if wms.active:
-			print ' ... setting to fallback:', wms.active
+		if wms.fallback:
+			print ' ... setting to fallback...'
 		else:
 			print ' ... No fallback window manager chosen'
-
+		wms.active = wms.fallback
 # if in a failsafe session, don't start with compiz (provides an easy way to make sure metacity starts for gnome users if compiz breaks)
 	if wms.active == 'compiz' and env.failsafe:
-		wms.active = wms.fallback
-		if wms.active:
-			print ' * Failsafe session, setting to fallback:', wms.active
+		if wms.fallback:
+			print ' * Failsafe session, setting to fallback...'
 		else:
 			print ' ... No fallback window manager chosen'
-
+		
+		wms.active = wms.fallback
 
 elif 'compiz' in wms:
 	wms.active = 'compiz'
@@ -63,7 +62,6 @@ else:
 
 # Set True if using Xorg AIGLX since the '--indirect-rendering' option has no effect in that situation. 
 env.set()
-
 if env.tfp == 'indirect' and 'indirect rendering' in options:
 	options['indirect rendering'].sensitive = False
 	if not options['indirect rendering'].enabled:

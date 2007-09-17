@@ -73,7 +73,7 @@ wms = {
 
 	'xfwm4':
 		('xfwm4', ['xfwm4'],
-		 'Xfwm4', 'xfce4', ['noreplace'], ['killall', 'xfwm4']),
+		 'Xfwm4', 'xfce', ['noreplace'], ['killall', 'xfwm4']),
 
 	'openbox':
 		('openbox', ['openbox', '--replace'],

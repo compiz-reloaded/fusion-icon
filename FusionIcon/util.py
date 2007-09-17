@@ -20,7 +20,8 @@
 # Author(s): crdlb
 # Copyright 2007 Christopher Williams <christopherw@verizon.net> 
 
-import os, compizconfig, data, ConfigParser, time
+import os, compizconfig, ConfigParser, time
+import data as _data
 from parser import options as parser_options
 from environment import env
 from execute import run
@@ -35,8 +36,11 @@ def is_running(app):
 
 class Application(object):
 
-	def __init__(self, name):
+	def __init__(self, name, apps, installed):
+
 		self.name = name
+		self.apps = apps
+
 		self.base = installed.apps[name][0]
 		self.command = installed.apps[name][1]
 		self.label = installed.apps[name][2]
@@ -47,37 +51,43 @@ class Application(object):
 
 class Applications(dict):
 
-	def __init__(self):
+	def __init__(self, installed):
 		for app in installed.apps:
-			self[app] = Application(app)
+			self[app] = Application(app, self, installed)
 
 class CompizOption(object):
 
-	def __init__(self, name):
+	def __init__(self, name, options, installed, config):
+
+		self.options = options
+		self.config = config
+
 		self.name = name
-		self.switch = data.options[name][1]
-		self.label = data.options[name][2]
+		self.switch = installed.options[name][1]
+		self.label = installed.options[name][2]
 		self.sensitive = True
 
 	def __get(self):
-		return config.getboolean('compiz options', self.name)
+		return self.config.getboolean('compiz options', self.name)
 
 	def __set(self, value):
 		print ' * Setting option %s to %s' %(self.label, value)
-		config.set('compiz options', self.name, str(bool(value)).lower())
-		config.write(open(data.config_file, 'w'))
+		self.config.set('compiz options', self.name, str(bool(value)).lower())
+		self.config.write(open(self.config.config_file, 'w'))
 
 	enabled = property(__get, __set)
 
 class CompizOptions(dict):
 
-	def __init__(self):
-		for option in data.options:
-			self[option] = CompizOption(option)
+	def __init__(self, installed, config):
+		for option in installed.options:
+			self[option] = CompizOption(option, self, installed, config)
 
 class WindowManager(object):
 
-	def __init__(self, name):
+	def __init__(self, name, wms, installed):
+
+		self.wms = wms
 		self.name = name
 		self.base = installed.wms[name][0]
 		self.command = installed.wms[name][1]
@@ -91,9 +101,12 @@ class WindowManager(object):
 
 class WindowManagers(dict):
 
-	def __init__(self):
+	def __init__(self, installed, config):
+
+		self.config = config
+
 		for wm in installed.wms:
-			self[wm] = WindowManager(wm)
+			self[wm] = WindowManager(wm, self, installed)
 
 		self.fallback = None
 		wm = [w for w in self if self[w].desktop == env.desktop]
@@ -111,8 +124,8 @@ class WindowManagers(dict):
 				self.ordered_list.append(wm)
 		self.ordered_list.extend([wm for wm in self if wm not in self.ordered_list])
 	
-	def __get(self	):
-		return config.get('window manager', 'active wm')
+	def __get(self):
+		return self.config.get('window manager', 'active wm')
 
 	def __set(self, value):
 
@@ -121,8 +134,9 @@ class WindowManagers(dict):
 		elif not value:
 			print ' * Setting window manager to empty value'
 
-		config.set('window manager', 'active wm', str(value))
-	
+		self.config.set('window manager', 'active wm', str(value))
+		self.config.write(open(self.config.config_file, 'w'))
+
 	def __set_old(self):
 		
 		self.old = None
@@ -180,7 +194,9 @@ class WindowManagers(dict):
 
 class CompizDecorator(object):
 
-	def __init__(self, name):
+	def __init__(self, name, decorators, installed):
+
+		self.decorators = decorators
 		self.name = name
 		self.base = installed.decorators[name][0]
 		self.command = installed.decorators[name][1]
@@ -189,26 +205,29 @@ class CompizDecorator(object):
 
 	def kill_others(self):
 		killall = ['killall']
-		for decorator in [x for x in decorators if x != self.name]:
-			killall.append(decorators[decorator].base)
+		for decorator in [x for x in self.decorators if x != self.name]:
+			killall.append(self.decorators[decorator].base)
 		run(killall, 'call')
 
 class CompizDecorators(dict):
 		
-	def __init__(self):
+	def __init__(self, installed):
+
 		# Open CompizConfig context
 		if parser_options.verbose:
 			print ' * Opening CompizConfig context'
-		try:
-			self.context = compizconfig.Context(plugins=['decoration'], basic_metadata=True)
-		except:
-			self.context = compizconfig.Context()
 
-		self.decoration = self.context.Plugins['decoration']
-		self.command = self.decoration.Display['command']
-		
+		try:
+			context = compizconfig.Context( \
+				plugins=['decoration'], basic_metadata=True)
+
+		except:
+			context = compizconfig.Context()
+
+		self.command = context.Plugins['decoration'].Display['command']
+
 		for decorator in installed.decorators:
-			self[decorator] = CompizDecorator(decorator)
+			self[decorator] = CompizDecorator(decorator, self, installed)
 
 		self.default = None
 		decorator = [d for d in self if self[d].desktop == env.desktop]
@@ -223,11 +242,11 @@ class CompizDecorators(dict):
 	
 	def __set(self, decorator):
 		if decorator in self:
-			self.context.ProcessEvents()
+			self.command.Plugin.Context.ProcessEvents()
 			print ' * Setting decorator to %s ("%s")' \
 				%(self[decorator].label, self[decorator].command)
 			self.command.Value = self[decorator].command
-			self.context.Write()
+			self.command.Plugin.Context.Write()
 		elif not decorator:
 			print ' * Not setting decorator to none'
 
@@ -245,7 +264,7 @@ class CompizDecorators(dict):
 
 class Installed(object):
 
-	def __init__(self):
+	def __init__(self, data):
 		print ' * Searching for installed applications...'
 
 		### Compiz Detection
@@ -270,12 +289,14 @@ class Installed(object):
 		else:
 			compiz = None
 
+		output = ''
+
 		for name in bins:
 			if len(bins) > 1 and name == compiz:
 				selected = ' <*>'
 			else:
 				selected = ''
-			output = ' -- %s%s' %(bins[name], selected)
+			output += ' -- %s%s' %(bins[name], selected)
 
 		### Everything Else
 		self.wms = data.wms.copy()
@@ -308,10 +329,25 @@ class Installed(object):
 
 		if parser_options.verbose:
 			print output.rstrip()
+		
+		compiz_optionlist = []
+
+		self.options = data.options.copy()
+
+		if compiz:
+			compiz_help = run([compiz, '--help'], 'output')
+			for item in compiz_help.split():
+				item = item[1:].replace(']', '')
+				if item.startswith('--'):
+					compiz_optionlist.append(item)
+
+		for option in data.options:
+			if data.options[option][1] not in compiz_optionlist:
+				del self.options[option]
 
 class Configuration(ConfigParser.ConfigParser):
 
-	def __init__(self):
+	def __init__(self, data):
 		
 		ConfigParser.ConfigParser.__init__(self)
 		self.config_folder = data.config_folder
@@ -376,10 +412,10 @@ class Configuration(ConfigParser.ConfigParser):
 			print ' ... no configuration file found'
 
 # Instantiate...
-installed = Installed()
-config = Configuration()
-apps = Applications()
-options = CompizOptions()
-wms = WindowManagers()
-decorators = CompizDecorators()
+_installed = Installed(_data)
+config = Configuration(_data)
+apps = Applications(_installed)
+options = CompizOptions(_installed, config)
+wms = WindowManagers(_installed, config)
+decorators = CompizDecorators(_installed)
 
