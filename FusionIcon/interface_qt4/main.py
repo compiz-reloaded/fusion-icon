@@ -66,7 +66,8 @@ class Build(QtGui.QApplication):
 			self.Tray.menu.addAction(apps['ccsm'].label, lambda: run(['ccsm']))
 		if 'emerald theme manager' in apps:
 			self.Tray.menu.addAction(apps['emerald theme manager'].label, lambda: run(apps['emerald theme manager'].command))
-		self.Tray.menu.addSeparator()
+		if 'ccsm' in apps or 'emerald theme manager' in apps:
+			self.Tray.menu.addSeparator()
 		self.Tray.menu.addAction("Reload Window Manager", self.reload_wm)
 		self.Tray.menu.addAction("Select Window Manager").setMenu(self.Tray.managerMenu)
 		self.Tray.menu.addAction("Compiz Options").setMenu(self.Tray.optionsMenu)
