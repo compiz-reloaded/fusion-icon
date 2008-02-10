@@ -66,6 +66,11 @@ Xgl: True in Xgl'''
 		else:
 			failsafe_str = ''
 
+		# hack to eliminate inconsistency
+		if self.desktop == 'kde4':
+			self.desktop = 'kde'
+
+
 		print ' * Detected Session: %s%s' %(failsafe_str, self.desktop)
 
 
@@ -122,19 +127,22 @@ Xgl: True in Xgl'''
 				print ' ... present with indirect rendering, exporting: LIBGL_ALWAYS_INDIRECT=1'
 				os.environ['LIBGL_ALWAYS_INDIRECT'] = '1'
 			else:
-				print ' ... nor with indirect rendering, this isn\'t going to work!'
-
-		# If using Xgl with a proprietary driver, exports LD_PRELOAD=<mesa libGL>
-		if self.Xgl and self.glx_vendor != 'SGI':
-			print ' * Non-mesa driver on Xgl detected'
-			from data import mesa_libgl_locations
-			location = [l for l in mesa_libgl_locations if os.path.exists(l)]
-			if location:
-				print ' ... exporting: LD_PRELOAD=%s' %location[0]
-				os.environ['LD_PRELOAD'] = location[0]
-			else:
-				# kindly let the user know... but don't abort (maybe it will work :> )
-				print ' ... no mesa libGL found for preloading, this may not work!'
+				# If using Xgl with a proprietary driver, exports LD_PRELOAD=<mesa libGL>
+				if self.Xgl and self.glx_vendor != 'SGI':
+					print ' * Non-mesa driver on Xgl detected'
+					from data import mesa_libgl_locations
+					location = [l for l in mesa_libgl_locations if os.path.exists(l)]
+					if location:
+						print ' ... exporting: LD_PRELOAD=%s' %location[0]
+						os.environ['LD_PRELOAD'] = location[0]
+						if run(['glxinfo'], 'output').count(tfp) >= 3:
+							self.tfp = 'direct'
+						
+					else:
+						# kindly let the user know... but don't abort (maybe it will work :> )
+						print ' ... no mesa libGL found for preloading, this may not work!'
+				else:
+					print ' ... nor with indirect rendering, this isn\'t going to work!'
 
 		# Check for nvidia on Xorg
 		if not self.Xgl and self.glx_vendor == 'NVIDIA Corporation':

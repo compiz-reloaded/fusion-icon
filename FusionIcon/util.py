@@ -151,8 +151,9 @@ class WindowManagers(dict):
 		self.__set_old()
 
 		if self.active == 'compiz' and self.old and self[self.old].killcmd:
-			run(self[self.old].killcmd, 'call')
-			time.sleep(1)
+			if run(['which', self[self.old].killcmd[0]], 'call', quiet=True) == 0:
+				run(self[self.old].killcmd, 'call')
+				time.sleep(1)
 
 		if self.active and self.old and 'noreplace' in self[self.active].flags:
 			run(['killall', self[self.old].base], 'call')

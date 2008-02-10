@@ -42,16 +42,9 @@ config_folder = os.path.join(config_home, 'compiz')
 
 config_file = os.path.join(config_folder, 'fusion-icon')
 
-# Key:
-#  identifier (for wms, this is what gets written to the config file)
-# Value:
-#  O - base command (for wms and decorators), config file option name
-#  1 - full command, actual compiz argument
-#  2 - display name
-#  3 - desktop environment for which it should be the fallback/default
-#  4 - list of extra properties:
-#          noreplace: lacks working --replace switch
-#  5 - Extra command to run before killing
+#app
+#	base command, full command line
+#	label
 
 apps = {
 	'ccsm':
@@ -62,6 +55,10 @@ apps = {
 		'Emerald Theme Manager'),
 }
 
+#wm
+#	base command, full command line
+#	label, desktop, special flags, command to run before replacing
+
 wms = {
 	'metacity':
 		('metacity', ['metacity', '--replace'],
@@ -70,6 +67,10 @@ wms = {
 	'kwin':
 		('kwin', ['kwin', '--replace'],
 		 'KWin', 'kde', None, ['dcop', 'kwin', 'KWinInterface', 'stopKompmgr']),
+
+	'kwin4':
+		('kwin-kde4', ['kwin-kde4', '--replace'],
+		 'KWin (KDE4)', 'kde', None, None),
 
 	'xfwm4':
 		('xfwm4', ['xfwm4'],
@@ -93,6 +94,10 @@ wms = {
 
 }
 
+#decorator
+#	base command, full command line,
+#	label, desktop environment
+
 decorators = {
 	'emerald':
 		('emerald', 'emerald --replace', 
@@ -105,7 +110,15 @@ decorators = {
 	'kwd':
 		('kde-window-decorator', 'kde-window-decorator --replace',
 		 'KDE Window Decorator', 'kde'),
+
+	'kwd4':
+		('kde4-window-decorator', 'kde4-window-decorator --replace',
+		 'KDE4 Window Decorator', 'kde'),
 }
+
+#option:
+#	(unused), switch,
+#	label
 
 options = {
 	'indirect rendering':
