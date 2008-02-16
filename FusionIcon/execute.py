@@ -26,34 +26,39 @@ signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 def run(command, mode='spawn', quiet=False, env=None):
 	'Simple wrapper for the subprocess module. Supported modes: spawn, call, and output'
 
-	if mode == 'spawn':
-		if not quiet:
-			popen_object = subprocess.Popen(command)
-		else:
-			popen_object = subprocess.Popen(command, stdout=open(os.devnull, 'w'))
+	try:
+		if mode == 'spawn':
+			if not quiet:
+				popen_object = subprocess.Popen(command)
+			else:
+				popen_object = subprocess.Popen(command, stdout=open(os.devnull, 'w'))
 		
-		return popen_object
+			return popen_object
 
-	elif mode == 'call':
-		# restore normal child handling
-		signal.signal(signal.SIGCHLD, signal.SIG_DFL)
-		if not quiet:
-			exitcode = subprocess.call(command, stderr=subprocess.PIPE)
-		else:
-			exitcode = subprocess.call(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		elif mode == 'call':
+			# restore normal child handling
+			signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+			if not quiet:
+				exitcode = subprocess.call(command, stderr=subprocess.PIPE)
+			else:
+				exitcode = subprocess.call(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-		# turn zombie protection back on
-		signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+			# turn zombie protection back on
+			signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
-		return exitcode
+			return exitcode
 
-	elif mode == 'output':
-		signal.signal(signal.SIGCHLD, signal.SIG_DFL)
-		if not env:
-			output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=open(os.devnull, 'w')).communicate()[0]
-		else:
-			output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=open(os.devnull, 'w'), env=env).communicate()[0]
+		elif mode == 'output':
+			signal.signal(signal.SIGCHLD, signal.SIG_DFL)
+			if not env:
+				output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=open(os.devnull, 'w')).communicate()[0]
+			else:
+				output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=open(os.devnull, 'w'), env=env).communicate()[0]
 
-		signal.signal(signal.SIGCHLD, signal.SIG_IGN)
+			signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 
-		return output
+			return output
+
+	except OSError:
+		print ' * execution of "%s" failed' % ' '.join(command)
+		return None

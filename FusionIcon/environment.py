@@ -92,6 +92,7 @@ Xgl: True in Xgl'''
 		else:
 			raise SystemExit, ' * Error: xvinfo not installed!'
 
+		self.glx_vendor = None
 		line = [l for l in self.glxinfo.splitlines() if 'client glx vendor string:' in l]
 		if line:
 			self.glx_vendor = ' '.join(line[0].split()[4:])

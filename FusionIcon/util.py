@@ -112,9 +112,9 @@ class WindowManagers(dict):
 		wm = [w for w in self if self[w].desktop == env.desktop]
 		if wm:
 			self.fallback = wm[0]
-	
-		elif self:
-			self.fallback = self.keys()[0]
+
+		elif [w for w in self if w != 'compiz']:
+			self.fallback = list([w for w in self if w != 'compiz'])[0]
 
 		self.__set_old()
 
