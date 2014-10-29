@@ -14,8 +14,8 @@
 # You should have received a copy of the GNU General Publaic License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Author(s): crdlb
-# Copyright 2007 Christopher Williams <christopherw@verizon.net> 
+# Original copyright 2007 Christopher Williams <christopherw@verizon.net> 
+# Author(s): crdlb, kozec
 
 import os
 
