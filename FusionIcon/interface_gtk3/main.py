@@ -68,7 +68,8 @@ class TrayMenu(Gtk.Menu):
 		item.set_submenu(submenu)
 		if not options:
 			item.set_sensitive(False)
-		self.append(item)
+		else:
+			self.append(item)
 
 		#Window Decorator
 		item = Gtk.ImageMenuItem('Select Window Decorator')
