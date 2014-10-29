@@ -25,7 +25,7 @@ except ImportError:
 # parse command line
 from FusionIcon.parser import options
 
-if options.reset:	
+if options.reset:
 	try:
 		from FusionIcon.data import config_file
 		print ' * Configuration file (%s) being reset' %config_file
@@ -54,6 +54,7 @@ if options.no_interface:
 	init()
 
 else:
-	from FusionIcon.interface import choose_interface
-	choose_interface(try_first=options.interface)
-
+	try:
+		import FusionIcon.interface_gtk
+	except ImportError, e:
+		print ' * GTK interface is missing required library', e

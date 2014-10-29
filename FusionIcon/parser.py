@@ -32,11 +32,8 @@ parser.add_option('-v', '--verbose', action='store_true', dest='verbose',
 
 interface_group = OptionGroup(parser, 'Interface Options')
 
-interface_group.add_option('-i', '--interface', dest='interface',
-	help='Try a certain interface first')
-
 interface_group.add_option('-u', '--no-interface', action='store_true', dest='no_interface',
-	help='Do not use any interface')
+	help='Do not use graphics interface')
 
 parser.add_option_group(interface_group)
 
