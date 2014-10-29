@@ -186,7 +186,6 @@ class CompizDecoratorMenu(Gtk.Menu):
 		for decorator in decorators:
 			item = CompizDecoratorItem(decorator, prev)
 			item.set_name(str(decorator))
-			print "I", item.get_group()
 			self.append(item)
 			prev = item
 
