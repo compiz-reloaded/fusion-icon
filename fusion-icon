@@ -55,6 +55,6 @@ if options.no_interface:
 
 else:
 	try:
-		import FusionIcon.interface_gtk
+		import FusionIcon.interface_gtk3
 	except ImportError, e:
 		print ' * GTK interface is missing required library', e
