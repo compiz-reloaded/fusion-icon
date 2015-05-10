@@ -63,6 +63,10 @@ wms = {
 	'metacity':
 		('metacity', ['metacity', '--replace'],
 		 'Metacity', 'gnome', None, None,),
+	
+	'marco':
+		('marco', ['marco', '--replace'],
+		 'Marco', 'mate', None, None,),
 
 	'kwin':
 		('kwin', ['kwin', '--replace'],
