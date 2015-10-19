@@ -1,6 +1,6 @@
 PREFIX = '/usr'
 DESTDIR = '/'
-#interfaces = 'gtk qt4'
+interfaces = 'gtk3'
 
 all:
 	@python setup.py build

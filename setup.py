@@ -46,9 +46,7 @@ version = open('VERSION', 'r').read().strip()
 packages = ['FusionIcon']
 
 available_interfaces = {
-	'gtk': 'FusionIcon.interface_gtk',
-	'qt4': 'FusionIcon.interface_qt4',
-#	'qt3': 'FusionIcon.interface_qt3',
+	'gtk3': 'FusionIcon.interface_gtk3',
 }
 
 #if 'interfaces' in os.environ:
@@ -72,10 +70,10 @@ data_files = [
 setup(
 	name='fusion-icon',
 	version=version,
-	description='User-friendly tray icon for launching and managing Compiz Fusion',
+	description='User-friendly tray icon for launching and managing Compiz',
 	author='Christopher Williams',
 	author_email='christopherw@verizon.net',
-	url='http://opencompositing.org',
+	url='https://github.com/raveit65/fusion-icon',
 	packages=packages,
 	scripts=['fusion-icon'],
 	data_files=data_files,
