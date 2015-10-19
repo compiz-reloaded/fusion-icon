@@ -109,7 +109,7 @@ decorators = {
 
 	'gwd': 
 		('gtk-window-decorator', 'gtk-window-decorator --replace', 
-		 'GTK Window Decorator', 'gnome'),
+		 'GTK Window Decorator', 'mate'),
 
 	'kwd':
 		('kde-window-decorator', 'kde-window-decorator --replace',

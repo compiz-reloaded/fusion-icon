@@ -47,9 +47,9 @@ tfp: 'direct' if texture_from_pixmap is present with direct rendering (implying 
 
 Xgl: True in Xgl'''
 
-		# Check gnome- and kde-specific vars, then try generic 'DESKTOP_SESSION'
+		# Check mate- and kde-specific vars, then try generic 'DESKTOP_SESSION'
 		if GDSID in os.environ:
-			self.desktop = 'gnome'
+			self.desktop = 'mate'
 
 		elif 'KDE_FULL_SESSION' in os.environ: 
 			self.desktop = 'kde'
@@ -58,7 +58,7 @@ Xgl: True in Xgl'''
 			self.desktop = os.environ.get('DESKTOP_SESSION', 'unknown')
 
 		self.failsafe = False
-		if self.desktop == 'gnome' and GDSID in os.environ and os.environ[GDSID] == 'failsafe':
+		if self.desktop == 'mate' and GDSID in os.environ and os.environ[GDSID] == 'failsafe':
 			self.failsafe = True
 		
 		if self.failsafe:
