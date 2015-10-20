@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Original copyright 2007 Christopher Williams <christopherw@verizon.net> 
-# Author(s): crdlb, kozec
+# Author(s): crdlb, kozec, raveit65
 
 import os
 

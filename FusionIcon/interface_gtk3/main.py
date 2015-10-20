@@ -18,6 +18,7 @@
 #
 # Original author: crdlb
 # GTK3 port: kozec
+# author: raveit65
 
 import os, time
 from gi.repository import Gtk

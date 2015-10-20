@@ -17,8 +17,8 @@
 #
 # Based on compiz-icon, Copyright 2007 Felix Bellanger <keeguon@gmail.com>
 #
-# Original copyright 2007 Christopher Williams <christopherw@verizon.net> 
-# Author(s): crdlb, kozec
+# Original copyright 2007 Christopher Williams <christopherw@verizon.net>
+# Author(s): crdlb, kozec, raveit65
 
 import os, compizconfig, ConfigParser, time
 import data as _data
