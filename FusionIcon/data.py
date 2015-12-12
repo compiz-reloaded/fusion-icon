@@ -33,7 +33,7 @@ mesa_libgl_locations = (
 	'/usr/share/nvidia-glx/diversions/libGL.so.1.2',
 )
 
-compiz_args = ['--replace', '--sm-disable', '--ignore-desktop-hints', 'ccp']
+compiz_args = ['ccp', '--replace', '--sm-disable', '--ignore-desktop-hints']
 
 config_home = os.environ.get('XDG_CONFIG_HOME',
 			os.path.join(os.environ['HOME'], '.config'))
@@ -60,21 +60,21 @@ apps = {
 #	label, desktop, special flags, command to run before replacing
 
 wms = {
-	'metacity':
-		('metacity', ['metacity', '--replace'],
-		 'Metacity', 'gnome', None, None,),
-	
 	'marco':
 		('marco', ['marco', '--replace'],
 		 'Marco', 'mate', None, None,),
 
-	'kwin':
-		('kwin', ['kwin', '--replace'],
-		 'KWin', 'kde', None, ['dcop', 'kwin', 'KWinInterface', 'stopKompmgr']),
+	'metacity':
+		('metacity', ['metacity', '--replace'],
+		 'Metacity', 'gnome', None, None,),
 
-	'kwin4':
-		('kwin-kde4', ['kwin-kde4', '--replace'],
-		 'KWin (KDE4)', 'kde', None, None),
+	'mutter':
+		('mutter', ['mutter', '--replace'],
+		 'Mutter', 'gnome', None, None,),
+
+	'kwin':
+		('kde', ['kwin', '--replace'],
+		 'KWin', 'kde', None, None),
 
 	'xfwm4':
 		('xfwm4', ['xfwm4'],
@@ -109,19 +109,11 @@ decorators = {
 
 	'mwd':
 		('mate-window-decorator', 'mate-window-decorator --replace',
-		 'MATE (GTK+) Window Decorator', None),
+		 'MATE (GTK+) Window Decorator', 'mate'),
 
 	'gwd':
 		('gtk-window-decorator', 'gtk-window-decorator --replace',
 		 'GTK+ Window Decorator', None),
-
-	'kwd':
-		('kde-window-decorator', 'kde-window-decorator --replace',
-		 'KDE Window Decorator', 'kde'),
-
-	'kwd4':
-		('kde4-window-decorator', 'kde4-window-decorator --replace',
-		 'KDE4 Window Decorator', 'kde'),
 }
 
 #option:

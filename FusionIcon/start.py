@@ -44,14 +44,6 @@ if not parser_options.force_compiz:
 		else:
 			print ' ... No fallback window manager chosen'
 		wms.active = wms.fallback
-# if in a failsafe session, don't start with compiz (provides an easy way to make sure metacity starts for gnome users if compiz breaks)
-	if wms.active == 'compiz' and env.failsafe:
-		if wms.fallback:
-			print ' * Failsafe session, setting to fallback...'
-		else:
-			print ' ... No fallback window manager chosen'
-		
-		wms.active = wms.fallback
 
 elif 'compiz' in wms:
 	wms.active = 'compiz'

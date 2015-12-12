@@ -21,7 +21,6 @@ import os
 from execute import run
 
 tfp = 'GLX_EXT_texture_from_pixmap'
-GDSID = 'GNOME_DESKTOP_SESSION_ID'
 
 class Environment:
 
@@ -31,8 +30,6 @@ class Environment:
 	def __init__(self):
 
 		'''desktop: current desktop enviroment used to choose interface, fallback wm, and default decorator
-	
-failsafe: boolean, True if in a failsafe session, currently only supports gnome failsafe mode.
 
 glxinfo: output of glxinfo command
 
@@ -46,31 +43,19 @@ tfp: 'direct' if texture_from_pixmap is present with direct rendering (implying 
 
 Xgl: True in Xgl'''
 
-		# Check mate- and kde-specific vars, then try generic 'DESKTOP_SESSION'
-		if GDSID in os.environ:
+		# Check for various desktop environments
+		if os.getenv('XDG_CURRENT_DESKTOP') == 'MATE' or os.getenv("MATE_DESKTOP_SESSION_ID") is not None:
 			self.desktop = 'mate'
-
-		elif 'KDE_FULL_SESSION' in os.environ: 
+		elif os.getenv('XDG_CURRENT_DESKTOP') == 'GNOME' or os.getenv("GNOME_DESKTOP_SESSION_ID") is not None:
+			self.desktop = 'gnome'
+		elif os.getenv('XDG_CURRENT_DESKTOP') == 'KDE':
 			self.desktop = 'kde'
-
+		elif os.getenv("XDG_SESSION_DESKTOP") is not None:
+			self.desktop = os.environ.get('XDG_SESSION_DESKTOP', 'unknown')
 		else:
 			self.desktop = os.environ.get('DESKTOP_SESSION', 'unknown')
 
-		self.failsafe = False
-		if self.desktop == 'mate' and GDSID in os.environ and os.environ[GDSID] == 'failsafe':
-			self.failsafe = True
-		
-		if self.failsafe:
-			failsafe_str = 'failsafe '
-		else:
-			failsafe_str = ''
-
-		# hack to eliminate inconsistency
-		if self.desktop == 'kde4':
-			self.desktop = 'kde'
-
-
-		print ' * Detected Session: %s%s' %(failsafe_str, self.desktop)
+		print ' * Detected Session: %s' self.desktop
 
 
 		## Save the output of glxinfo and xvinfo for later use:
