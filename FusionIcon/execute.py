@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # This file is part of Fusion-icon.
 
 # Fusion-icon is free software; you can redistribute it and/or modify
