@@ -91,7 +91,7 @@ wms = {
 	'fvwm':
 		('fvwm', ['fvwm', '--replace'],
 		 'FVWM', None, None, None),
-	
+
 	'icewm':
 		('icewm', ['icewm', '--replace'],
 		 'IceWM', None, None, None),
@@ -124,7 +124,6 @@ options = {
 	'indirect rendering':
 		(None, '--indirect-rendering', 'Indirect Rendering'),
 
-	'loose binding': 
+	'loose binding':
 		(None, '--loose-binding', 'Loose Binding'),
 }
-

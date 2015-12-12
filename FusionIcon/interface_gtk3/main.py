@@ -25,7 +25,7 @@ from gi.repository import Gtk, AppIndicator3
 from FusionIcon.start import wms, apps, options, decorators, init
 
 class TrayMenu(Gtk.Menu):
-	
+
 	def __init__(self):
 		Gtk.Menu.__init__(self)
 

@@ -25,7 +25,7 @@ tfp = 'GLX_EXT_texture_from_pixmap'
 class Environment:
 
 	'''Detects properties of the enviroment, and provides a set() method that uses this information to export environment variables needed to start compiz.'''
-	
+
 
 	def __init__(self):
 
@@ -55,7 +55,7 @@ Xgl: True in Xgl'''
 		else:
 			self.desktop = os.environ.get('DESKTOP_SESSION', 'unknown')
 
-		print ' * Detected Session: %s' self.desktop
+		print(' * Detected Session: ' + self.desktop)
 
 
 		## Save the output of glxinfo and xvinfo for later use:
@@ -66,7 +66,7 @@ Xgl: True in Xgl'''
 		else:
 			raise SystemExit, ' * Error: glxinfo not installed!'
 
-		# make a temp environment 
+		# make a temp environment
 		indirect_environ = os.environ.copy()
 		indirect_environ['LIBGL_ALWAYS_INDIRECT'] = '1'
 		self.indirect_glxinfo = run('glxinfo', 'output', env=indirect_environ)
@@ -102,37 +102,36 @@ Xgl: True in Xgl'''
 
 		# Check for Intel and export INTEL_BATCH
 		if 'Intel' in self.glxinfo:
-			print ' * Intel detected, exporting: INTEL_BATCH=1'
+			print(' * Intel detected, exporting: INTEL_BATCH=1')
 			os.environ['INTEL_BATCH'] = '1'
 
 		# Check TFP and export LIBGL_ALWAYS_INDIRECT if needed
 		if self.tfp != 'direct':
-			print ' * No %s with direct rendering context' %tfp
+			print(' * No ' + tfp + ' with direct rendering context')
 			if self.tfp == 'indirect':
-				print ' ... present with indirect rendering, exporting: LIBGL_ALWAYS_INDIRECT=1'
+				print(' ... present with indirect rendering, exporting: LIBGL_ALWAYS_INDIRECT=1')
 				os.environ['LIBGL_ALWAYS_INDIRECT'] = '1'
 			else:
 				# If using Xgl with a proprietary driver, exports LD_PRELOAD=<mesa libGL>
 				if self.Xgl and self.glx_vendor != 'SGI':
-					print ' * Non-mesa driver on Xgl detected'
+					print(' * Non-mesa driver on Xgl detected')
 					from data import mesa_libgl_locations
 					location = [l for l in mesa_libgl_locations if os.path.exists(l)]
 					if location:
-						print ' ... exporting: LD_PRELOAD=%s' %location[0]
+						print(' ... exporting: LD_PRELOAD=' + location[0])
 						os.environ['LD_PRELOAD'] = location[0]
 						if run(['glxinfo'], 'output').count(tfp) >= 3:
 							self.tfp = 'direct'
-						
+
 					else:
 						# kindly let the user know... but don't abort (maybe it will work :> )
-						print ' ... no mesa libGL found for preloading, this may not work!'
+						print(' ... no mesa libGL found for preloading, this may not work!')
 				else:
-					print ' ... nor with indirect rendering, this isn\'t going to work!'
+					print(' ... nor with indirect rendering, this isn\'t going to work!')
 
 		# Check for nvidia on Xorg
 		if not self.Xgl and self.glx_vendor == 'NVIDIA Corporation':
-			print ' * NVIDIA on Xorg detected, exporting: __GL_YIELD=NOTHING'
+			print(' * NVIDIA on Xorg detected, exporting: __GL_YIELD=NOTHING')
 			os.environ['__GL_YIELD'] = 'NOTHING'
 
 env = Environment()
-

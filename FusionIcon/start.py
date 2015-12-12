@@ -27,9 +27,9 @@ def init():
 		# Do not restart the wm if it's already running
 		if wms.active == wms.active == wms.old != 'compiz':
 			#always restart compiz since we can't know compiz was started correctly
-			print ' * %s is already running' %wms[wms.active].label
+			print(' * ' + wms[wms.active].label + ' is already running')
 		else:
-			print ' * Starting %s' %wms[wms.active].label
+			print(' * Starting ' + wms[wms.active].label)
 			wms.start()
 
 config.check()
@@ -38,11 +38,11 @@ config.check()
 
 if not parser_options.force_compiz:
 	if wms.active not in wms:
-		print ' * "%s" not installed' %wms.active
+		print(' * "' + wms.active + '" not installed')
 		if wms.fallback:
-			print ' ... setting to fallback...'
+			print(' ... setting to fallback...')
 		else:
-			print ' ... No fallback window manager chosen'
+			print(' ... No fallback window manager chosen')
 		wms.active = wms.fallback
 
 elif 'compiz' in wms:
@@ -57,4 +57,3 @@ if env.tfp == 'indirect' and 'indirect rendering' in options:
 	options['indirect rendering'].sensitive = False
 	if not options['indirect rendering'].enabled:
 		options['indirect rendering'].enabled = True
-

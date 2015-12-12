@@ -18,8 +18,8 @@ class install (_install):
 		try:
 			f = open(INSTALLED_FILES, 'w')
 		except:
-			self.warn ('Could not write installed files list %s' %INSTALLED_FILES)
-			return 
+			self.warn ('Could not write installed files list ' + INSTALLED_FILES)
+			return
 
 		f.write(data)
 		f.close()
@@ -30,18 +30,18 @@ class uninstall(_install):
 		try:
 			files = file(INSTALLED_FILES, 'r').readlines()
 		except:
-			self.warn('Could not read installed files list %s' %INSTALLED_FILES)
+			self.warn('Could not read installed files list ' + INSTALLED_FILES)
 			return
 
 		for f in files:
-			print 'Uninstalling %s' %f.strip()
+			print('Uninstalling ' + f.strip())
 			try:
 				os.unlink(f.strip())
 			except:
-				self.warn('Could not remove file %s' %f)
+				self.warn('Could not remove file ' + f)
 		os.remove(INSTALLED_FILES)
 
-version = open('VERSION', 'r').read().strip()	
+version = open('VERSION', 'r').read().strip()
 
 packages = ['FusionIcon']
 
@@ -84,7 +84,7 @@ setup(
 
 #Stolen from ccsm's setup.py
 if sys.argv[1] == 'install':
-	
+
 	prefix = None
 
 	if len (sys.argv) > 2:
@@ -108,9 +108,8 @@ if sys.argv[1] == 'install':
 %s/share/icons/hicolor''' % prefix
 	root_specified = [s for s in sys.argv if s.startswith('--root')]
 	if not root_specified or root_specified[0] == '--root=/':
-		print 'Updating Gtk icon cache.'
+		print('Updating Gtk icon cache.')
 		os.system(gtk_update_icon_cache)
 	else:
-		print '''*** Icon cache not updated. After install, run this:
-***     %s''' % gtk_update_icon_cache
-
+		print('''*** Icon cache not updated. After install, run this:
+***     %s''' % gtk_update_icon_cache)

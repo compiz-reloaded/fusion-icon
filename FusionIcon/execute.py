@@ -31,7 +31,7 @@ def run(command, mode='spawn', quiet=False, env=None):
 				popen_object = subprocess.Popen(command)
 			else:
 				popen_object = subprocess.Popen(command, stdout=open(os.devnull, 'w'))
-		
+
 			return popen_object
 
 		elif mode == 'call':
@@ -59,5 +59,5 @@ def run(command, mode='spawn', quiet=False, env=None):
 			return output
 
 	except OSError:
-		print ' * execution of "%s" failed' % ' '.join(command)
+		print(' * execution of "' + ' '.join(command) + '" failed')
 		return None

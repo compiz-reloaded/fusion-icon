@@ -51,5 +51,4 @@ options, args = parser.parse_args()
 
 # fusion-icon accepts no arguments
 if args:
-	parser.error('no such argument: %s' %args[0])
-
+	parser.error('no such argument: ' + args[0])
