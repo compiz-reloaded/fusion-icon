@@ -21,7 +21,7 @@
 # author: raveit65
 
 import os, time
-from gi.repository import Gtk
+from gi.repository import Gtk, AppIndicator3
 from FusionIcon.start import wms, apps, options, decorators, init
 
 class TrayMenu(Gtk.Menu):
@@ -87,10 +87,6 @@ class TrayMenu(Gtk.Menu):
 		item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_QUIT)
 		item.connect('activate', self.quit_activate)
 		self.append(item)
-
-	def show_menu(self, widget, button, time):
-		self.show_all()
-		self.popup(None, None, None, Gtk.StatusIcon.position_menu, button, time)
 
 	def reload_activate(self, widget):
 		wms.restart()
@@ -190,10 +186,13 @@ class CompizDecoratorMenu(Gtk.Menu):
 			self.append(item)
 			prev = item
 
-icon = Gtk.StatusIcon.new_from_icon_name('fusion-icon')
-icon.set_tooltip_text('Compiz Fusion Icon')
+icon = AppIndicator3.Indicator.new('Compiz Icon', \
+  Gtk.IconTheme.get_default().lookup_icon('fusion-icon', 0, Gtk.IconLookupFlags.FORCE_SVG).get_filename(), \
+  AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
+icon.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
 menu = TrayMenu()
-icon.connect('popup-menu', menu.show_menu)
+icon.set_menu(menu)
+menu.show_all()
 
 # active wm (possibly) starts here
 init()
