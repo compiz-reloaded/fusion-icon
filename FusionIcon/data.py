@@ -19,10 +19,6 @@
 
 import os
 
-from gi.repository import Gio
-settings = Gio.Settings.new("org.mate.Marco.general")
-theme = settings.get_string("theme")
-
 mesa_libgl_locations = (
 	# ubuntu
 	'/usr/lib/fglrx/libGL.so.1.2.xlibmesa',
@@ -108,12 +104,16 @@ wms = {
 
 decorators = {
 	'emerald':
-		('emerald', 'emerald --replace', 
+		('emerald', 'emerald --replace',
 		 'Emerald', None),
 
-	'gwd': 
-		('gtk-window-decorator', 'gtk-window-decorator --replace --marco-theme "%s"' %theme,
-		 'GTK Window Decorator', 'mate'),
+	'mwd':
+		('mate-window-decorator', 'mate-window-decorator --replace',
+		 'MATE (GTK+) Window Decorator', None),
+
+	'gwd':
+		('gtk-window-decorator', 'gtk-window-decorator --replace',
+		 'GTK+ Window Decorator', None),
 
 	'kwd':
 		('kde-window-decorator', 'kde-window-decorator --replace',
