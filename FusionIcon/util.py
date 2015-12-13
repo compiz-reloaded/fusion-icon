@@ -164,7 +164,8 @@ class WindowManagers(dict):
 			compiz_command = self['compiz'].command[:]
 			for option in options:
 				if options[option].enabled:
-					compiz_command.append(options[option].switch)
+					if options[option].switch is not None:
+						compiz_command.append(options[option].switch)
 
 			kill_list = ['killall']
 			for decorator in decorators:
@@ -218,14 +219,13 @@ class CompizDecorators(dict):
 		if parser_options.verbose:
 			print(' * Opening CompizConfig context')
 
-		try:
-			context = compizconfig.Context( \
-				plugins=['decoration'], basic_metadata=True)
+		context = compizconfig.Context()
 
-		except:
-			context = compizconfig.Context()
-
-		self.command = context.Plugins['decoration'].Display['command']
+		# Either Compiz 0.9.x or Compiz 0.8.x.
+		if 'decor' in context.Plugins:
+			self.command = context.Plugins['decor'].Screen['command']
+		else:
+			self.command = context.Plugins['decoration'].Display['command']
 
 		for decorator in installed.decorators:
 			self[decorator] = CompizDecorator(decorator, self, installed)
@@ -338,7 +338,7 @@ class Installed(object):
 		if compiz:
 			compiz_help = run([compiz, '--help'], 'output')
 			for item in compiz_help.split():
-				item = item[1:].replace(']', '')
+				item = item[1:].strip(" \r\n\t]")
 				if item.startswith('--'):
 					compiz_optionlist.append(item)
 
