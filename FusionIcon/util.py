@@ -207,7 +207,8 @@ class CompizDecorator(object):
 
 	def kill_others(self):
 		killall = ['killall']
-		for decorator in [x for x in self.decorators if x != self.name]:
+		#for decorator in [x for x in self.decorators if x != self.name]:
+		for decorator in self.decorators:
 			killall.append(self.decorators[decorator].base)
 		run(killall, 'call')
 
@@ -243,9 +244,11 @@ class CompizDecorators(dict):
 
 	def __set(self, decorator):
 		if decorator in self:
+			decorators[decorator].kill_others()
+			time.sleep(0.5)
 			self.command.Plugin.Context.ProcessEvents()
 			print(' * Setting decorator to ' + self[decorator].label + \
-				'("' + self[decorator].command + '")')
+				' ("' + self[decorator].command + '")')
 			self.command.Value = self[decorator].command
 			self.command.Plugin.Context.Write()
 		elif not decorator:

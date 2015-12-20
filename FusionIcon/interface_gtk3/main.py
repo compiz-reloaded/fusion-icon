@@ -170,8 +170,6 @@ class CompizDecoratorItem(Gtk.RadioMenuItem):
 
 	def activate(self, widget):
 		if widget.get_active():
-			decorators[self.decorator].kill_others()
-			time.sleep(0.5)
 			decorators.active = self.decorator
 
 class CompizDecoratorMenu(Gtk.Menu):
