@@ -41,6 +41,36 @@ class uninstall(_install):
 				self.warn('Could not remove file ' + f)
 		os.remove(INSTALLED_FILES)
 
+#Stolen from ccsm's setup.py
+if sys.argv[1] == 'build':
+
+	gtkver = '3.0'
+
+	if len (sys.argv) > 2:
+		i = 0
+		for o in sys.argv:
+			if o.startswith('--with-gtk'):
+				if o == '--with-gtk':
+					if len(sys.argv) >= i:
+						gtkver = sys.argv[i + 1]
+					sys.argv.remove(gtkver)
+				elif o.startswith('--with-gtk=') and len(o[11:]):
+					gtkver = o[11:]
+				sys.argv.remove(o)
+			i += 1
+
+	f = open(os.path.join ('FusionIcon/interface_gtk/main.py.in'), 'rt')
+	data = f.read()
+	f.close()
+	data = data.replace('@gtkver@', gtkver)
+	if gtkver == '3.0':
+		data = data.replace('@aiver@', '3')
+	else:
+		data = data.replace('@aiver@', '')
+	f = open(os.path.join('FusionIcon/interface_gtk/main.py'), 'wt')
+	f.write(data)
+	f.close()
+
 version = open('VERSION', 'r').read().strip()
 
 packages = ['FusionIcon']

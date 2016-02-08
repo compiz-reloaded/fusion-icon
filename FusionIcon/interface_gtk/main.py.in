@@ -17,11 +17,13 @@
 # Based on compiz-icon, Copyright 2007 Felix Bellanger <keeguon@gmail.com>
 #
 # Original author: crdlb
-# GTK3 port: kozec
+# GI port: kozec
+# AppIndicator port: XRevan86
 # author: raveit65
 
-import os, time
-from gi.repository import Gtk, AppIndicator3
+import os, time, gi
+gi.require_version('Gtk', '@gtkver@')
+from gi.repository import Gtk, AppIndicator@aiver@ as AppIndicator
 from FusionIcon.start import wms, apps, options, decorators, init
 
 class TrayMenu(Gtk.Menu):
@@ -32,7 +34,7 @@ class TrayMenu(Gtk.Menu):
 		#CCSM
 		if 'ccsm' in apps:
 			item = ApplicationItem('ccsm')
-			item.set_image(Gtk.Image.new_from_stock('gtk-preferences', Gtk.IconSize.MENU))
+			item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_PREFERENCES, Gtk.IconSize.MENU))
 			self.append(item)
 
 		#Emerald Theme Manager
@@ -48,14 +50,14 @@ class TrayMenu(Gtk.Menu):
 		#Reload
 		item = Gtk.ImageMenuItem('Reload Window Manager')
 		item.connect('activate', self.reload_activate)
-		item.set_image(Gtk.Image.new_from_stock('gtk-refresh', Gtk.IconSize.MENU))
+		item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_REFRESH, Gtk.IconSize.MENU))
 		if not wms:
 			item.set_sensitive(False)
 		self.append(item)
 
 		#Window Manager
 		item = Gtk.ImageMenuItem('Select Window Manager')
-		item.set_image(Gtk.Image.new_from_stock('gtk-index', Gtk.IconSize.MENU))
+		item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.MENU))
 		submenu = WindowManagerMenu()
 		item.set_submenu(submenu)
 		if not wms:
@@ -64,7 +66,7 @@ class TrayMenu(Gtk.Menu):
 
 		#Compiz Options
 		item = Gtk.ImageMenuItem('Compiz Options')
-		item.set_image(Gtk.Image.new_from_stock('gtk-properties', Gtk.IconSize.MENU))
+		item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_PROPERTIES, Gtk.IconSize.MENU))
 		submenu = CompizOptionMenu()
 		item.set_submenu(submenu)
 		if not options:
@@ -74,7 +76,7 @@ class TrayMenu(Gtk.Menu):
 
 		#Window Decorator
 		item = Gtk.ImageMenuItem('Select Window Decorator')
-		item.set_image(Gtk.Image.new_from_stock('gtk-select-color', Gtk.IconSize.MENU))
+		item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_SELECT_COLOR, Gtk.IconSize.MENU))
 		submenu = CompizDecoratorMenu()
 		item.set_submenu(submenu)
 		if not decorators:
@@ -184,10 +186,10 @@ class CompizDecoratorMenu(Gtk.Menu):
 			self.append(item)
 			prev = item
 
-icon = AppIndicator3.Indicator.new('Compiz Icon', \
+icon = AppIndicator.Indicator.new('Compiz Icon', \
   Gtk.IconTheme.get_default().lookup_icon('fusion-icon', 0, Gtk.IconLookupFlags.FORCE_SVG).get_filename(), \
-  AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
-icon.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
+  AppIndicator.IndicatorCategory.APPLICATION_STATUS)
+icon.set_status(AppIndicator.IndicatorStatus.ACTIVE)
 menu = TrayMenu()
 icon.set_menu(menu)
 menu.show_all()
