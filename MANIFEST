@@ -5,6 +5,7 @@ Makefile
 VERSION
 COPYING
 fusion-icon.desktop
+fusion-icon.appdata.xml
 FusionIcon/__init__.py
 FusionIcon/data.py
 FusionIcon/interface.py

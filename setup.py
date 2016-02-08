@@ -94,6 +94,7 @@ data_files = [
 	('share/icons/hicolor/48x48/apps',['images/48x48/fusion-icon.png']),
 	('share/icons/hicolor/scalable/apps',['images/scalable/fusion-icon.svg']),
 	('share/applications',['fusion-icon.desktop']),
+	('share/appdata',['fusion-icon.appdata.xml']),
 ]
 
 
