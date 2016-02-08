@@ -206,8 +206,7 @@ class CompizDecorator(object):
 
 	def kill_others(self):
 		killall = ['killall']
-		#for decorator in [x for x in self.decorators if x != self.name]:
-		for decorator in self.decorators:
+		for decorator in [x for x in self.decorators if x != self.name]:
 			killall.append(self.decorators[decorator].base)
 		run(killall, 'call')
 

@@ -107,13 +107,9 @@ decorators = {
 		('emerald', 'emerald --replace',
 		 'Emerald', None),
 
-	'mwd':
-		('mate-window-decorator', 'mate-window-decorator --replace',
-		 'MATE (GTK+) Window Decorator', 'mate'),
-
 	'gwd':
 		('gtk-window-decorator', 'gtk-window-decorator --replace',
-		 'GTK+ Window Decorator', None),
+		 'GTK+ Window Decorator', 'mate'),
 }
 
 #option:
