@@ -9,8 +9,8 @@ FusionIcon/__init__.py
 FusionIcon/data.py
 FusionIcon/interface.py
 FusionIcon/parser.py
-FusionIcon/interface_gtk3/__init__.py
-FusionIcon/interface_gtk3/main.py
+FusionIcon/interface_gtk/__init__.py
+FusionIcon/interface_gtk/main.py
 FusionIcon/util.py
 FusionIcon/environment.py
 FusionIcon/execute.py

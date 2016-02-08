@@ -46,7 +46,7 @@ version = open('VERSION', 'r').read().strip()
 packages = ['FusionIcon']
 
 available_interfaces = {
-	'gtk3': 'FusionIcon.interface_gtk3',
+	'gtk': 'FusionIcon.interface_gtk',
 }
 
 #if 'interfaces' in os.environ:
