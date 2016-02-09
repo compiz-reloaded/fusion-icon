@@ -64,7 +64,7 @@ Xgl: True in Xgl'''
 		if run(['which', 'glxinfo'], 'call', quiet=True) == 0:
 			self.glxinfo = run('glxinfo', 'output')
 		else:
-			raise SystemExit, ' * Error: glxinfo not installed!'
+			raise SystemExit(' * Error: glxinfo not installed!')
 
 		# make a temp environment
 		indirect_environ = os.environ.copy()
@@ -74,7 +74,7 @@ Xgl: True in Xgl'''
 		if run(['which', 'xvinfo'], 'call', quiet=True) == 0:
 			self.xvinfo = run('xvinfo', 'output')
 		else:
-			raise SystemExit, ' * Error: xvinfo not installed!'
+			raise SystemExit(' * Error: xvinfo not installed!')
 
 		self.glx_vendor = None
 		line = [l for l in self.glxinfo.splitlines() if 'client glx vendor string:' in l]

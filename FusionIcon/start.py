@@ -49,7 +49,7 @@ elif 'compiz' in wms:
 	wms.active = 'compiz'
 
 else:
-	raise SystemExit, ' *** Error: "--force-compiz" used and compiz not installed!'
+	raise SystemExit(' *** Error: "--force-compiz" used and compiz not installed!')
 
 # Set True if using Xorg AIGLX since the '--indirect-rendering' option has no effect in that situation. 
 env.set()
