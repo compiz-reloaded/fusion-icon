@@ -76,6 +76,7 @@ version = open('VERSION', 'r').read().strip()
 packages = ['FusionIcon']
 
 available_interfaces = {
+	'qt': 'FusionIcon.interface_qt',
 	'gtk': 'FusionIcon.interface_gtk',
 }
 
