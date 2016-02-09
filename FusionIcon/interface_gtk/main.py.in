@@ -38,7 +38,7 @@ class TrayMenu(Gtk.Menu):
 		#CCSM
 		if 'ccsm' in apps:
 			item = ApplicationItem('ccsm')
-			item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_PREFERENCES, Gtk.IconSize.MENU))
+			item.set_image(Gtk.Image.new_from_icon_name('preferences-system', Gtk.IconSize.MENU))
 			self.append(item)
 
 		#Emerald Theme Manager
@@ -54,14 +54,14 @@ class TrayMenu(Gtk.Menu):
 		#Reload
 		item = Gtk.ImageMenuItem('Reload Window Manager')
 		item.connect('activate', self.reload_activate)
-		item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_REFRESH, Gtk.IconSize.MENU))
+		item.set_image(Gtk.Image.new_from_icon_name('view-refresh', Gtk.IconSize.MENU))
 		if not wms:
 			item.set_sensitive(False)
 		self.append(item)
 
 		#Window Manager
 		item = Gtk.ImageMenuItem('Select Window Manager')
-		item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.MENU))
+		item.set_image(Gtk.Image.new_from_icon_name('view-restore', Gtk.IconSize.MENU))
 		submenu = WindowManagerMenu()
 		item.set_submenu(submenu)
 		if not wms:
@@ -70,7 +70,7 @@ class TrayMenu(Gtk.Menu):
 
 		#Compiz Options
 		item = Gtk.ImageMenuItem('Compiz Options')
-		item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_PROPERTIES, Gtk.IconSize.MENU))
+		item.set_image(Gtk.Image.new_from_icon_name('document-properties', Gtk.IconSize.MENU))
 		submenu = CompizOptionMenu()
 		item.set_submenu(submenu)
 		if not options:
@@ -80,7 +80,7 @@ class TrayMenu(Gtk.Menu):
 
 		#Window Decorator
 		item = Gtk.ImageMenuItem('Select Window Decorator')
-		item.set_image(Gtk.Image.new_from_stock(Gtk.STOCK_SELECT_COLOR, Gtk.IconSize.MENU))
+		item.set_image(Gtk.Image.new_from_icon_name('view-fullscreen', Gtk.IconSize.MENU))
 		submenu = CompizDecoratorMenu()
 		item.set_submenu(submenu)
 		if not decorators:
