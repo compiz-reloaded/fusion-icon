@@ -24,10 +24,7 @@
 import os, time, gi
 gi.require_version('Gtk', '@gtkver@')
 from gi.repository import Gtk
-try:
-	from gi.repository import AppIndicator@aiver@ as AppIndicator
-except ImportError:
-	pass
+from gi.repository import AppIndicator@aiver@ as AppIndicator
 from FusionIcon.start import wms, apps, options, decorators, init
 
 class TrayMenu(Gtk.Menu):
@@ -93,15 +90,6 @@ class TrayMenu(Gtk.Menu):
 		item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_QUIT)
 		item.connect('activate', self.quit_activate)
 		self.append(item)
-
-	def show_menu(self, widget, button, time):
-		try:
-			self.popup(None, None, None, Gtk.StatusIcon.position_menu, button, time)
-		except (AttributeError, NameError, TypeError):
-			from ctypes import cdll, c_uint, c_void_p
-			CGtk = cdll.LoadLibrary('libgtk-x11-2.0.so.0')
-			CGtk.gtk_menu_popup.argtypes = [c_void_p, c_void_p, c_void_p, c_void_p, c_void_p, c_uint, c_uint]
-			CGtk.gtk_menu_popup(hash(self), None, None, None, CGtk.gtk_status_icon_position_menu, button, time)
 
 	def reload_activate(self, widget):
 		wms.restart()
@@ -198,18 +186,12 @@ class CompizDecoratorMenu(Gtk.Menu):
 			item.set_name(str(decorator))
 			self.append(item)
 			prev = item
-try:
-	icon = AppIndicator.Indicator.new('Compiz Icon', \
-	  Gtk.IconTheme.get_default().lookup_icon('fusion-icon', 0, Gtk.IconLookupFlags.FORCE_SVG).get_filename(), \
-	  AppIndicator.IndicatorCategory.APPLICATION_STATUS)
-	icon.set_status(AppIndicator.IndicatorStatus.ACTIVE)
-	menu = TrayMenu()
-	icon.set_menu(menu)
-except (AttributeError, NameError, TypeError):
-	icon = Gtk.StatusIcon.new_from_icon_name('fusion-icon')
-	icon.set_tooltip_text('Compiz Icon')
-	menu = TrayMenu()
-	icon.connect('popup-menu', menu.show_menu)
+icon = AppIndicator.Indicator.new('Compiz Icon', \
+  Gtk.IconTheme.get_default().lookup_icon('fusion-icon', 0, Gtk.IconLookupFlags.FORCE_SVG).get_filename(), \
+  AppIndicator.IndicatorCategory.APPLICATION_STATUS)
+icon.set_status(AppIndicator.IndicatorStatus.ACTIVE)
+menu = TrayMenu()
+icon.set_menu(menu)
 menu.show_all()
 
 # active wm (possibly) starts here
