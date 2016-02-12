@@ -64,13 +64,13 @@ def choose_interface(try_first=None):
 			raise SystemExit(' *** Error: No such interface: ' + try_first)
 	else:
 
-		# use qt for mate, xfce, gnome; qt for everything else:
-		if 'gtk' in interfaces and (env.desktop in ('mate', 'xfce', 'gnome')):
-			chosen_interface = 'gtk'
-		elif 'qt' in interfaces:
+		# use qt for kde and lxqt; gtk for everything else:
+		if 'qt' in interfaces and env.desktop in ('kde', 'lxqt'):
 			chosen_interface = 'qt'
 		elif 'gtk' in interfaces:
 			chosen_interface = 'gtk'
+		elif 'qt' in interfaces:
+			chosen_interface = 'qt'
 		# interfaces is empty
 		else:
 			raise SystemExit(' *** no available interfaces, this should not happen')

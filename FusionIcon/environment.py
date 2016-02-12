@@ -52,6 +52,8 @@ Xgl: True in Xgl'''
 			self.desktop = 'gnome'
 		elif os.getenv('XDG_CURRENT_DESKTOP') == 'KDE' or os.getenv('KDE_FULL_SESSION') is not None:
 			self.desktop = 'kde'
+		elif os.getenv('XDG_CURRENT_DESKTOP') == 'LXQt':
+			self.desktop = 'lxqt'
 		elif os.getenv("XDG_CURRENT_DESKTOP") is not None:
 			self.desktop = os.environ.get('XDG_CURRENT_DESKTOP', 'unknown').lower()
 		else:
