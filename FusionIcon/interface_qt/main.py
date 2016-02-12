@@ -26,6 +26,7 @@ except ImportError:
 	if tuple(map(int, (QtCore.QT_VERSION_STR.split('.')))) < (4, 6, 0):
 		raise ImportError('Qt 4.6.x or later required')
 from FusionIcon.start import wms, apps, options, decorators, init
+from FusionIcon.execute import run
 
 class Build(QApplication):
 	def reload_wm(self):
