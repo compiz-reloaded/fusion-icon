@@ -49,7 +49,11 @@ class Build(QApplication):
 		QtCore.QObject.__init__(self, parent)
 		if not QSystemTrayIcon.isSystemTrayAvailable():
 			raise SystemExit('Notification area is not available.')
-		self.Tray = QSystemTrayIcon(QtGui.QIcon.fromTheme('fusion-icon'))
+		if QtGui.QIcon.hasThemeIcon('fusion-icon'):
+			image = QtGui.QIcon.fromTheme('fusion-icon')
+		else:
+			image = QtGui.QIcon.fromTheme('image-missing')
+		self.Tray = QSystemTrayIcon(image)
 		self.Tray.setToolTip('Compiz Icon')
 		self.Tray.managerMenu = QMenu()
 		self.Tray.optionsMenu = QMenu()
