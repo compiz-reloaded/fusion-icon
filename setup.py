@@ -44,9 +44,21 @@ class uninstall(_install):
 #Stolen from ccsm's setup.py
 if sys.argv[1] == 'build':
 
+	qtver = '5.0'
 	gtkver = '3.0'
 
 	if len (sys.argv) > 2:
+		i = 0
+		for o in sys.argv:
+			if o.startswith('--with-qt'):
+				if o == '--with-qt':
+					if len(sys.argv) >= i:
+						qtver = sys.argv[i + 1]
+					sys.argv.remove(qtver)
+				elif o.startswith('--with-qt=') and len(o[10:]):
+					qtver = o[10:]
+				sys.argv.remove(o)
+			i += 1
 		i = 0
 		for o in sys.argv:
 			if o.startswith('--with-gtk'):
@@ -59,17 +71,26 @@ if sys.argv[1] == 'build':
 				sys.argv.remove(o)
 			i += 1
 
+	f = open(os.path.join ('FusionIcon/interface_qt/main.py.in'), 'rt')
+	data = f.read()
+	f.close()
+	data = data.replace('@qtver@', qtver)
+	f = open(os.path.join('FusionIcon/interface_qt/main.py'), 'wt')
+	f.write(data)
+	f.close()
+
 	f = open(os.path.join ('FusionIcon/interface_gtk/main.py.in'), 'rt')
 	data = f.read()
 	f.close()
 	data = data.replace('@gtkver@', gtkver)
-	if gtkver == '3.0':
-		data = data.replace('@aiver@', '3')
-	else:
+	if gtkver == '2.0':
 		data = data.replace('@aiver@', '')
+	else:
+		data = data.replace('@aiver@', '3')
 	f = open(os.path.join('FusionIcon/interface_gtk/main.py'), 'wt')
 	f.write(data)
 	f.close()
+
 
 version = open('VERSION', 'r').read().strip()
 

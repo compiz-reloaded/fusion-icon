@@ -11,7 +11,7 @@ FusionIcon/data.py
 FusionIcon/interface.py
 FusionIcon/parser.py
 FusionIcon/interface_qt/__init__.py
-FusionIcon/interface_qt/main.py
+FusionIcon/interface_qt/main.py.in
 FusionIcon/interface_gtk/__init__.py
 FusionIcon/interface_gtk/main.py.in
 FusionIcon/util.py

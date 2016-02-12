@@ -17,10 +17,10 @@
 # Author(s): xsacha, XRevan86, raveit65
 
 import sys, os, time
-try:
+if '@qtver@' != '4.0':
 	from PyQt5 import QtWidgets, QtGui, QtCore
 	from PyQt5.QtWidgets import QApplication, QMenu, QActionGroup, QSystemTrayIcon
-except ImportError:
+else:
 	from PyQt4 import QtGui, QtCore
 	from PyQt4.QtGui import QApplication, QMenu, QActionGroup, QSystemTrayIcon
 	if tuple(map(int, (QtCore.QT_VERSION_STR.split('.')))) < (4, 6, 0):
