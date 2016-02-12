@@ -88,7 +88,7 @@ class Build(QApplication):
 		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('view-refresh'), 'Reload Window Manager', self.reload_wm)
 		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('view-restore'), 'Select Window Manager').setMenu(self.Tray.managerMenu)
 		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('document-properties'), 'Compiz Options').setMenu(self.Tray.optionsMenu)
-		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('view-fullscreen'), 'Select Window Decorator').setMenu(self.Tray.decoratorMenu)
+		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('window-new'), 'Select Window Decorator').setMenu(self.Tray.decoratorMenu)
 		self.Tray.menu.addSeparator()
 		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('application-exit'), 'Quit', self.quit)
 		self.Tray.setContextMenu(self.Tray.menu)
