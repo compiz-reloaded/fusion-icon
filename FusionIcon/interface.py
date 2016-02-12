@@ -18,7 +18,7 @@
 #
 # Copyright 2007 Christopher Williams <christopherw@verizon.net> 
 
-import sys
+import sys, os
 from util import env
 import start
 
@@ -65,7 +65,9 @@ def choose_interface(try_first=None):
 	else:
 
 		# use qt for kde and lxqt; gtk for everything else:
-		if 'qt' in interfaces and env.desktop in ('kde', 'lxqt'):
+		if os.getenv('FUSION_ICON_BACKEND') in interfaces:
+			chosen_interface = os.getenv('FUSION_ICON_BACKEND')
+		elif 'qt' in interfaces and env.desktop in ('kde', 'lxqt'):
 			chosen_interface = 'qt'
 		elif 'gtk' in interfaces:
 			chosen_interface = 'gtk'
