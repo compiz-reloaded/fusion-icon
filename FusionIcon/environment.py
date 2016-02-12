@@ -44,16 +44,18 @@ tfp: 'direct' if texture_from_pixmap is present with direct rendering (implying 
 Xgl: True in Xgl'''
 
 		# Check for various desktop environments
-		if os.getenv('XDG_CURRENT_DESKTOP') == 'MATE' or os.getenv("MATE_DESKTOP_SESSION_ID") is not None:
+		if os.getenv('XDG_CURRENT_DESKTOP') == 'MATE' or os.getenv('MATE_DESKTOP_SESSION_ID') is not None:
 			self.desktop = 'mate'
-		elif os.getenv('XDG_CURRENT_DESKTOP') == 'GNOME' or os.getenv("GNOME_DESKTOP_SESSION_ID") is not None:
+		elif os.getenv('XDG_CURRENT_DESKTOP') == 'XFCE' or os.getenv('DESKTOP_SESSION') in ('xfce', 'xfce4', 'Xfce Session'):
+			self.desktop = 'xfce'
+		elif os.getenv('XDG_CURRENT_DESKTOP').endswith('GNOME') or os.getenv('GNOME_DESKTOP_SESSION_ID') is not None:
 			self.desktop = 'gnome'
-		elif os.getenv('XDG_CURRENT_DESKTOP') == 'KDE':
+		elif os.getenv('XDG_CURRENT_DESKTOP') == 'KDE' or os.getenv('KDE_FULL_SESSION') is not None:
 			self.desktop = 'kde'
-		elif os.getenv("XDG_SESSION_DESKTOP") is not None:
-			self.desktop = os.environ.get('XDG_SESSION_DESKTOP', 'unknown')
+		elif os.getenv("XDG_CURRENT_DESKTOP") is not None:
+			self.desktop = os.environ.get('XDG_CURRENT_DESKTOP', 'unknown').lower()
 		else:
-			self.desktop = os.environ.get('DESKTOP_SESSION', 'unknown')
+			self.desktop = os.environ.get('DESKTOP_SESSION', 'unknown').lower()
 
 		print(' * Detected Session: ' + self.desktop)
 
