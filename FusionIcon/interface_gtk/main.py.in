@@ -186,9 +186,8 @@ class CompizDecoratorMenu(Gtk.Menu):
 			item.set_name(str(decorator))
 			self.append(item)
 			prev = item
-icon = AppIndicator.Indicator.new('Compiz Icon', \
-  Gtk.IconTheme.get_default().lookup_icon('fusion-icon', 0, Gtk.IconLookupFlags.FORCE_SVG).get_filename(), \
-  AppIndicator.IndicatorCategory.APPLICATION_STATUS)
+
+icon = AppIndicator.Indicator.new('Compiz Icon', 'fusion-icon', AppIndicator.IndicatorCategory.APPLICATION_STATUS)
 icon.set_status(AppIndicator.IndicatorStatus.ACTIVE)
 menu = TrayMenu()
 icon.set_menu(menu)
