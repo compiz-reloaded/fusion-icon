@@ -4,6 +4,7 @@ setup.py
 Makefile
 VERSION
 COPYING
+NEWS
 fusion-icon.desktop
 fusion-icon.appdata.xml
 FusionIcon/__init__.py
