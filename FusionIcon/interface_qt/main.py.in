@@ -98,6 +98,12 @@ class Build(QApplication):
 		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('application-exit'), 'Quit', self.quit)
 		self.Tray.setContextMenu(self.Tray.menu)
 		self.Tray.show()
+		self.Tray.activated.connect(self.showMenu)
 		init()
+
+	def showMenu(self, reason):
+		# Show menu on left click as well.
+		if reason == QSystemTrayIcon.Trigger:
+			self.Tray.contextMenu().popup(self.Tray.geometry().adjusted(0, 1, 0, 1).bottomLeft())
 
 Build(sys.argv).exec_()
