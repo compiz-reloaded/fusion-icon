@@ -1,3 +1,10 @@
+Release 0.2.1 (2016-02-21 Sorokin Alexei <sor.alexei@meowr.ru>)
+===============================================================
+
+Add left click action on Qt backend.
+
+Fix an icon of Emerald Theme Manager 0.8.12.1 on Gtk backend.
+
 Release 0.2.0 (2016-02-12 Sorokin Alexei <sor.alexei@meowr.ru>)
 ===============================================================
 
