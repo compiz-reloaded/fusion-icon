@@ -104,6 +104,7 @@ class Build(QApplication):
 	def showMenu(self, reason):
 		# Show menu on left click as well.
 		if reason == QSystemTrayIcon.Trigger:
-			self.Tray.contextMenu().popup(self.Tray.geometry().adjusted(0, 1, 0, 1).bottomLeft())
+			rect = self.Tray.geometry()
+			self.Tray.contextMenu().popup(QtCore.QPoint(rect.left() + (rect.width() / 2), self.Tray.geometry().bottom() + 1))
 
 Build(sys.argv).exec_()
