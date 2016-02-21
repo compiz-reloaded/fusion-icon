@@ -41,7 +41,10 @@ class TrayMenu(Gtk.Menu):
 		#Emerald Theme Manager
 		if 'emerald theme manager' in apps:
 			item = ApplicationItem('emerald theme manager')
-			item.set_image(Gtk.Image.new_from_icon_name('emerald-theme-manager-icon', Gtk.IconSize.MENU))
+			if Gtk.IconTheme.get_default().lookup_icon('emerald-theme-manager-icon', 0, Gtk.IconLookupFlags.USE_BUILTIN) is not None:
+				item.set_image(Gtk.Image.new_from_icon_name('emerald-theme-manager-icon', Gtk.IconSize.MENU))
+			else:
+				item.set_image(Gtk.Image.new_from_icon_name('emerald-theme-manager', Gtk.IconSize.MENU))
 			self.append(item)
 
 		if 'ccsm' in apps or 'emerald theme manager' in apps:
