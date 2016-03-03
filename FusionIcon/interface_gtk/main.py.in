@@ -52,7 +52,7 @@ class TrayMenu(Gtk.Menu):
 			self.append(item)
 
 		#Reload
-		item = Gtk.ImageMenuItem('Reload Window Manager')
+		item = Gtk.ImageMenuItem(label='Reload Window Manager')
 		item.connect('activate', self.reload_activate)
 		item.set_image(Gtk.Image.new_from_icon_name('view-refresh', Gtk.IconSize.MENU))
 		if not wms:
@@ -60,7 +60,7 @@ class TrayMenu(Gtk.Menu):
 		self.append(item)
 
 		#Window Manager
-		item = Gtk.ImageMenuItem('Select Window Manager')
+		item = Gtk.ImageMenuItem(label='Select Window Manager')
 		item.set_image(Gtk.Image.new_from_icon_name('view-restore', Gtk.IconSize.MENU))
 		submenu = WindowManagerMenu()
 		item.set_submenu(submenu)
@@ -69,7 +69,7 @@ class TrayMenu(Gtk.Menu):
 		self.append(item)
 
 		#Compiz Options
-		item = Gtk.ImageMenuItem('Compiz Options')
+		item = Gtk.ImageMenuItem(label='Compiz Options')
 		item.set_image(Gtk.Image.new_from_icon_name('document-properties', Gtk.IconSize.MENU))
 		submenu = CompizOptionMenu()
 		item.set_submenu(submenu)
@@ -79,7 +79,7 @@ class TrayMenu(Gtk.Menu):
 			self.append(item)
 
 		#Window Decorator
-		item = Gtk.ImageMenuItem('Select Window Decorator')
+		item = Gtk.ImageMenuItem(label='Select Window Decorator')
 		item.set_image(Gtk.Image.new_from_icon_name('window-new', Gtk.IconSize.MENU))
 		submenu = CompizDecoratorMenu()
 		item.set_submenu(submenu)
@@ -103,7 +103,7 @@ class TrayMenu(Gtk.Menu):
 class ApplicationItem(Gtk.ImageMenuItem):
 
 	def __init__(self, app):
-		Gtk.ImageMenuItem.__init__(self, apps[app].label)
+		Gtk.ImageMenuItem.__init__(self, label=apps[app].label)
 
 		self.app = app
 		if app not in apps:
