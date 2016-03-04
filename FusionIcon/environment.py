@@ -48,16 +48,16 @@ Xgl: True in Xgl'''
 			self.desktop = 'mate'
 		elif os.getenv('XDG_CURRENT_DESKTOP') == 'XFCE' or os.getenv('DESKTOP_SESSION') in ('xfce', 'xfce4', 'Xfce Session'):
 			self.desktop = 'xfce'
-		elif os.getenv('XDG_CURRENT_DESKTOP').endswith('GNOME') or os.getenv('GNOME_DESKTOP_SESSION_ID') is not None:
+		elif os.getenv('XDG_CURRENT_DESKTOP', '').endswith('GNOME') or os.getenv('GNOME_DESKTOP_SESSION_ID') is not None:
 			self.desktop = 'gnome'
 		elif os.getenv('XDG_CURRENT_DESKTOP') == 'KDE' or os.getenv('KDE_FULL_SESSION') is not None:
 			self.desktop = 'kde'
 		elif os.getenv('XDG_CURRENT_DESKTOP') == 'LXQt':
 			self.desktop = 'lxqt'
 		elif os.getenv("XDG_CURRENT_DESKTOP") is not None:
-			self.desktop = os.environ.get('XDG_CURRENT_DESKTOP', 'unknown').lower()
+			self.desktop = os.getenv('XDG_CURRENT_DESKTOP', 'unknown').lower()
 		else:
-			self.desktop = os.environ.get('DESKTOP_SESSION', 'unknown').lower()
+			self.desktop = os.getenv('DESKTOP_SESSION', 'unknown').lower()
 
 		print(' * Detected Session: ' + self.desktop)
 
