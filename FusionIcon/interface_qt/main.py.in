@@ -46,8 +46,6 @@ class Build(QtWidgets.QApplication):
 
 	def __init__(self, parent=None):
 		QtCore.QObject.__init__(self, parent)
-		if not QtWidgets.QSystemTrayIcon.isSystemTrayAvailable():
-			raise SystemExit('Notification area is not available.')
 		if QtGui.QIcon.hasThemeIcon('fusion-icon'):
 			image = QtGui.QIcon.fromTheme('fusion-icon')
 		else:
@@ -102,7 +100,7 @@ class Build(QtWidgets.QApplication):
 
 	def showMenu(self, reason):
 		# Show menu on left click as well.
-		if reason == QtWidgets.QSystemTrayIcon.Trigger:
+		if reason == QtWidgets.QSystemTrayIcon.Trigger and self.Tray.geometry().isValid():
 			rect = self.Tray.geometry()
 			self.Tray.contextMenu().popup(QtCore.QPoint(rect.left() + (rect.width() / 2), self.Tray.geometry().bottom() + 1))
 
