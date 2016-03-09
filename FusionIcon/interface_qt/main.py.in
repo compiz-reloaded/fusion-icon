@@ -53,7 +53,7 @@ class Build(QtWidgets.QApplication):
 		else:
 			image = QtGui.QIcon.fromTheme('image-missing')
 		self.Tray = QtWidgets.QSystemTrayIcon(image)
-		self.Tray.setToolTip('Compiz Icon')
+		self.Tray.setToolTip('Fusion Icon')
 		self.Tray.managerMenu = QtWidgets.QMenu()
 		self.Tray.optionsMenu = QtWidgets.QMenu()
 		self.Tray.decoratorMenu = QtWidgets.QMenu()
