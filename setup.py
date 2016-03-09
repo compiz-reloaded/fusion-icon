@@ -74,7 +74,7 @@ if sys.argv[1] == 'build':
 	f = open(os.path.join ('FusionIcon/interface_qt/main.py.in'), 'rt')
 	data = f.read()
 	f.close()
-	data = data.replace('@qtver@', qtver)
+	data = data.replace('@qtver@', qtver.split('.')[0])
 	f = open(os.path.join('FusionIcon/interface_qt/main.py'), 'wt')
 	f.write(data)
 	f.close()

@@ -17,18 +17,17 @@
 # Author(s): xsacha, XRevan86, raveit65
 
 import sys, os, time
-if '@qtver@' != '4.0':
-	from PyQt5 import QtWidgets, QtGui, QtCore
-	from PyQt5.QtWidgets import QApplication, QMenu, QActionGroup, QSystemTrayIcon
-else:
-	from PyQt4 import QtGui, QtCore
-	from PyQt4.QtGui import QApplication, QMenu, QActionGroup, QSystemTrayIcon
-	if tuple(map(int, (QtCore.QT_VERSION_STR.split('.')))) < (4, 6, 0):
-		raise ImportError('Qt 4.6.x or later required')
+from PyQt@qtver@ import QtCore, QtGui
+if tuple(map(int, (QtCore.QT_VERSION_STR.split('.')))) < (4, 6, 0):
+	raise ImportError('Qt 4.6.x or later required')
+try:
+	from PyQt@qtver@ import QtWidgets
+except ImportError:
+	from PyQt@qtver@ import QtGui as QtWidgets
 from FusionIcon.start import wms, apps, options, decorators, init
 from FusionIcon.execute import run
 
-class Build(QApplication):
+class Build(QtWidgets.QApplication):
 	def reload_wm(self):
 		wms.restart()
 
@@ -47,19 +46,19 @@ class Build(QApplication):
 
 	def __init__(self, parent=None):
 		QtCore.QObject.__init__(self, parent)
-		if not QSystemTrayIcon.isSystemTrayAvailable():
+		if not QtWidgets.QSystemTrayIcon.isSystemTrayAvailable():
 			raise SystemExit('Notification area is not available.')
 		if QtGui.QIcon.hasThemeIcon('fusion-icon'):
 			image = QtGui.QIcon.fromTheme('fusion-icon')
 		else:
 			image = QtGui.QIcon.fromTheme('image-missing')
-		self.Tray = QSystemTrayIcon(image)
+		self.Tray = QtWidgets.QSystemTrayIcon(image)
 		self.Tray.setToolTip('Compiz Icon')
-		self.Tray.managerMenu = QMenu()
-		self.Tray.optionsMenu = QMenu()
-		self.Tray.decoratorMenu = QMenu()
-		self.groupManager = QActionGroup(self.Tray.managerMenu)
-		self.groupDecorator = QActionGroup(self.Tray.decoratorMenu)
+		self.Tray.managerMenu = QtWidgets.QMenu()
+		self.Tray.optionsMenu = QtWidgets.QMenu()
+		self.Tray.decoratorMenu = QtWidgets.QMenu()
+		self.groupManager = QtWidgets.QActionGroup(self.Tray.managerMenu)
+		self.groupDecorator = QtWidgets.QActionGroup(self.Tray.decoratorMenu)
 
 		for wm in wms.ordered_list:
 			actionWM = self.groupManager.addAction(self.Tray.managerMenu.addAction(wms[wm].label, lambda val=wm : self.toggleWM(val)))
@@ -80,7 +79,7 @@ class Build(QApplication):
 			if decorators.active == decorator:
 				actionWD.setChecked(True)
 
-		self.Tray.menu = QMenu()
+		self.Tray.menu = QtWidgets.QMenu()
 
 		if 'ccsm' in apps:
 			self.Tray.menu.addAction(QtGui.QIcon.fromTheme('preferences-system'), apps['ccsm'].label, lambda: run(['ccsm']))
@@ -103,7 +102,7 @@ class Build(QApplication):
 
 	def showMenu(self, reason):
 		# Show menu on left click as well.
-		if reason == QSystemTrayIcon.Trigger:
+		if reason == QtWidgets.QSystemTrayIcon.Trigger:
 			rect = self.Tray.geometry()
 			self.Tray.contextMenu().popup(QtCore.QPoint(rect.left() + (rect.width() / 2), self.Tray.geometry().bottom() + 1))
 
