@@ -92,7 +92,7 @@ class Build(QtWidgets.QApplication):
 		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('document-properties'), 'Compiz Options').setMenu(self.Tray.optionsMenu)
 		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('window-new'), 'Select Window Decorator').setMenu(self.Tray.decoratorMenu)
 		self.Tray.menu.addSeparator()
-		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('application-exit'), 'Quit', self.quit)
+		self.Tray.menu.addAction(QtGui.QIcon.fromTheme('application-exit'), 'Quit', self.exit)
 		self.Tray.setContextMenu(self.Tray.menu)
 		self.Tray.show()
 		self.Tray.activated.connect(self.showMenu)
