@@ -127,7 +127,7 @@ setup(
 	description='User-friendly tray icon for launching and managing Compiz',
 	author='Wolfgang Ulbrich',
 	author_email='chat-to-me@raveit.de',
-	url='https://github.com/raveit65/fusion-icon',
+	url='https://github.com/compiz-reloaded/fusion-icon',
 	packages=packages,
 	scripts=['fusion-icon'],
 	data_files=data_files,
