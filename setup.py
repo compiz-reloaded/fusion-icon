@@ -118,6 +118,7 @@ data_files = [
 	('share/icons/hicolor/scalable/apps',['images/scalable/fusion-icon.svg']),
 	('share/applications',['fusion-icon.desktop']),
 	('share/appdata',['fusion-icon.appdata.xml']),
+	('/etc/xdg/autostart',['autostart/fusion-icon.desktop']),
 ]
 
 
