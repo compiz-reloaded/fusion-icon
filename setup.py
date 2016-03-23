@@ -157,7 +157,7 @@ if sys.argv[1] == 'install':
 			i += 1
 
 	if not prefix:
-		prefix = '/usr'
+		prefix = '/usr/local'
 
 	gtk_update_icon_cache = '''gtk-update-icon-cache -f -t \
 %s/share/icons/hicolor''' % prefix
