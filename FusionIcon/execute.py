@@ -50,9 +50,9 @@ def run(command, mode='spawn', quiet=False, env=None):
 		elif mode == 'output':
 			signal.signal(signal.SIGCHLD, signal.SIG_DFL)
 			if not env:
-				output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=open(os.devnull, 'w')).communicate()[0]
+				output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=open(os.devnull, "w"), universal_newlines=True).communicate()[0]
 			else:
-				output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=open(os.devnull, 'w'), env=env).communicate()[0]
+				output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=open(os.devnull, "w"), universal_newlines=True, env=env).communicate()[0]
 
 			signal.signal(signal.SIGCHLD, signal.SIG_IGN)
 

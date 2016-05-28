@@ -19,11 +19,17 @@
 # Original copyright 2007 Christopher Williams <christopherw@verizon.net>
 # Author(s): crdlb, kozec, raveit65
 
-import os, compizconfig, ConfigParser, time
-import data as _data
-from parser import options as parser_options
-from environment import env
-from execute import run
+import os, compizconfig, time
+try:
+    import configparser
+except ImportError:
+    # Python 2.x compatibility.
+    import ConfigParser as configparser
+
+import FusionIcon.data as _data
+from FusionIcon.parser import options as parser_options
+from FusionIcon.environment import env
+from FusionIcon.execute import run
 import subprocess, signal
 
 def is_running(app):
@@ -347,11 +353,11 @@ class Installed(object):
 			if data.options[option][1] not in compiz_optionlist:
 				del self.options[option]
 
-class Configuration(ConfigParser.ConfigParser):
+class Configuration(configparser.ConfigParser):
 
 	def __init__(self, data):
 
-		ConfigParser.ConfigParser.__init__(self)
+		configparser.ConfigParser.__init__(self)
 		self.config_folder = data.config_folder
 		self.config_file = data.config_file
 

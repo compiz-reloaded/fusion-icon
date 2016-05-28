@@ -17,8 +17,8 @@
 # Original copyright 2007 Christopher Williams <christopherw@verizon.net>
 # Author(s): crdlb, nesl247, raveit65
 
-from parser import options as parser_options
-from util import env, config, apps, options, wms, decorators
+from FusionIcon.parser import options as parser_options
+from FusionIcon.util import env, config, apps, options, wms, decorators
 
 def init():
 	'Final start function, should be called once when fusion-icon starts'

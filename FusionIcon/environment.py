@@ -18,7 +18,7 @@
 # Author(s): crdlb, nesl247, raveit65
 
 import os
-from execute import run
+from FusionIcon.execute import run
 
 tfp = 'GLX_EXT_texture_from_pixmap'
 

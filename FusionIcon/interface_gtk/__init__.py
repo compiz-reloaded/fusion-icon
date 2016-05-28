@@ -1,3 +1,3 @@
 # -*- python -*-
 
-import main
+from FusionIcon.interface_gtk import main

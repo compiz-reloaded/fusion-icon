@@ -19,8 +19,8 @@
 # Copyright 2007 Christopher Williams <christopherw@verizon.net> 
 
 import sys, os
-from util import env
-import start
+from FusionIcon.util import env
+from FusionIcon import start
 
 interfaces={
 	'qt': 'Qt',
