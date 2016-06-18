@@ -22,8 +22,12 @@
 # author: raveit65
 
 import os, time, gi
-gi.require_version('Gtk', '@gtkver@')
-gi.require_version('AppIndicator@aiver@', '0.1')
+try:
+    gi.require_version('Gtk', '@gtkver@')
+    gi.require_version('AppIndicator@aiver@', '0.1')
+except ValueError as e:
+    # enable interface fallbacking (works only for ImportError)
+    raise ImportError(e)
 from gi.repository import Gtk
 from gi.repository import AppIndicator@aiver@ as AppIndicator
 from FusionIcon.start import wms, apps, options, decorators, init
