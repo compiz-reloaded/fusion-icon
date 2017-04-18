@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Compiz Fusion Icon
-Comment=Start a tray icon to manage Compiz
-Exec=fusion-icon
-Icon=fusion-icon
-Terminal=false
-Hidden=true
