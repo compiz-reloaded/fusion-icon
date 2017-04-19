@@ -1,3 +1,12 @@
+Release 0.2.3 (2017-04-18 Sorokin Alexei <sor.alexei@meowr.ru>)
+===============================================================
+
+Fix fail to fallback from GTK+ if deps are not met.
+
+Add Python3 support.
+
+Use /usr/local as a default prefix path.
+
 Release 0.2.2 (2016-03-09 Sorokin Alexei <sor.alexei@meowr.ru>)
 ===============================================================
 
