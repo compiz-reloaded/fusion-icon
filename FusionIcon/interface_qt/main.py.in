@@ -48,7 +48,7 @@ class Build(QtWidgets.QApplication):
 		QtCore.QObject.__init__(self, parent)
 		self.setApplicationName('Fusion Icon')
 		image = QtGui.QIcon()
-		for iconName in ('fusion-icon-panel', 'fusion-icon', 'image-missing'):
+		for iconName in ('fusion-icon', 'image-missing'):
 			if QtGui.QIcon.hasThemeIcon(iconName):
 				image = QtGui.QIcon.fromTheme(iconName)
 				break
