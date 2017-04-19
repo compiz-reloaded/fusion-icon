@@ -101,9 +101,18 @@ class Build(QtWidgets.QApplication):
 		init()
 
 	def showMenu(self, reason):
-		# Show menu on left click as well.
-		if reason == QtWidgets.QSystemTrayIcon.Trigger and self.Tray.geometry().isValid():
-			rect = self.Tray.geometry()
-			self.Tray.contextMenu().popup(QtCore.QPoint(rect.left() + (rect.width() / 2), self.Tray.geometry().bottom() + 1))
+		# Show the menu on left clicking as well.
+		if reason == QtWidgets.QSystemTrayIcon.Trigger:
+			pos = None
+			if self.Tray.geometry().isValid():
+				rect = self.Tray.geometry()
+				pos = QtCore.QPoint(rect.left() + (rect.width() / 2),
+				                    rect.bottom() + 1)
+			elif int(QtCore.QT_VERSION_STR.split('.')[0]) >= 5:
+				# With SNI this will be used, unless Qt4 (sni-qt).
+				pos = QtGui.QCursor.pos()
+
+			if pos:
+				self.Tray.contextMenu().popup(pos)
 
 Build(sys.argv).exec_()
