@@ -23,12 +23,13 @@
 
 import os, time, gi
 try:
+    gi.require_version('Gdk', '@gtkver@')
     gi.require_version('Gtk', '@gtkver@')
     gi.require_version('AppIndicator@aiver@', '0.1')
 except ValueError as e:
     # enable interface fallbacking (works only for ImportError)
     raise ImportError(e)
-from gi.repository import Gtk
+from gi.repository import Gdk, Gtk
 from gi.repository import AppIndicator@aiver@ as AppIndicator
 from FusionIcon.start import wms, apps, options, decorators, init
 
@@ -98,6 +99,19 @@ class TrayMenu(Gtk.Menu):
 		item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_QUIT)
 		item.connect('activate', self.quit_activate)
 		self.append(item)
+
+		self.action_item = Gtk.MenuItem()
+		self.action_item.connect('activate', self.show_menu_activate)
+		self.action_item.show()
+		# Fool libappindicator into thinking this is menu's child.
+		self.action_item.set_parent(self)
+
+	def show_menu_activate(self, widget):
+		self.show_all()
+		try:
+			self.popup(None, None, None, None, 1, Gdk.CURRENT_TIME)
+		except AttributeError:
+			pass
 
 	def reload_activate(self, widget):
 		wms.restart()
@@ -199,6 +213,7 @@ icon = AppIndicator.Indicator.new('Fusion Icon', 'fusion-icon', AppIndicator.Ind
 icon.set_status(AppIndicator.IndicatorStatus.ACTIVE)
 menu = TrayMenu()
 icon.set_menu(menu)
+icon.set_secondary_activate_target(menu.action_item)
 menu.show_all()
 
 # active wm (possibly) starts here
