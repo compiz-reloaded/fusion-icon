@@ -1,3 +1,19 @@
+Release 0.2.4 (2017-06-10 Sorokin Alexei <sor.alexei@meowr.ru>)
+===============================================================
+
+Make the application ID for SNI the same as in
+AppIndicator in Qt5: "Fusion Icon". Can affect the icon ordering.
+
+Stop using fusion-icon-panel in the Qt frontend.
+The icon is expected to sometimes be symbolic.
+Hence explicit lookup for it can cause problems.
+
+Implement left-click action with SNI on Qt5.
+
+Open menu on "secondary action" in GTK+3.
+
+Fix an issue with Python 3.
+
 Release 0.2.3 (2017-04-18 Sorokin Alexei <sor.alexei@meowr.ru>)
 ===============================================================
 
