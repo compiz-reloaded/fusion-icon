@@ -244,7 +244,7 @@ class CompizDecorators(dict):
 			self.default = 'emerald'
 
 		elif self:
-			self.default = self.keys()[0]
+			self.default = next(iter(self))
 
 	def __set(self, decorator):
 		if decorator in self:
