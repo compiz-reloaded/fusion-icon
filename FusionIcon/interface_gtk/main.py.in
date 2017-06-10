@@ -96,7 +96,8 @@ class TrayMenu(Gtk.Menu):
 		item = Gtk.SeparatorMenuItem()
 		self.append(item)
 
-		item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_QUIT)
+		item = Gtk.ImageMenuItem(label='Quit')
+		item.set_image(Gtk.Image.new_from_icon_name('application-exit', Gtk.IconSize.MENU))
 		item.connect('activate', self.quit_activate)
 		self.append(item)
 
