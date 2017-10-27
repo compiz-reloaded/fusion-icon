@@ -76,7 +76,7 @@ class CompizOption(object):
 		return self.config.getboolean('compiz options', self.name)
 
 	def __set(self, value):
-		print(' * Setting option ' + self.label + ' to ' + value)
+		print(' * Setting option ' + self.label + ' to ' + str(value))
 		self.config.set('compiz options', self.name, str(bool(value)).lower())
 		self.config.write(open(self.config.config_file, 'w'))
 
