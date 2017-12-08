@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Compiz Fusion Icon
-Comment=Start and manage Compiz
+_Name=Fusion Icon
+_Comment=Start and manage Compiz
 Exec=fusion-icon
 Icon=fusion-icon
 Terminal=false

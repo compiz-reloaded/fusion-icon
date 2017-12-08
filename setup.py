@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-
-import sys, os
-from stat import *
-from distutils.core import setup
+import os
+import subprocess
+import sys
 from distutils.command.install import install as _install
+from distutils.core import setup
+from stat import *
 
 INSTALLED_FILES = '.installed_files'
 
@@ -109,6 +110,13 @@ available_interfaces = {
 
 packages.extend(available_interfaces.values())
 
+cmd = "intltool-merge -d -u po/ fusion-icon.desktop.in fusion-icon.desktop".split(" ")
+proc = subprocess.Popen(cmd)
+proc.wait()
+
+cmd = "intltool-merge -x -u po/ fusion-icon.appdata.xml.in fusion-icon.appdata.xml".split(" ")
+proc = subprocess.Popen(cmd)
+proc.wait()
 
 data_files = [
 	('share/icons/hicolor/22x22/apps',['images/22x22/fusion-icon.png']),

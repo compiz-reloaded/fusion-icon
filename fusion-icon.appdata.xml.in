@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2017 Sorokin Alexei <sor.alexei@meowr.ru> -->
+<component type="desktop">
+  <id type="desktop">fusion-icon.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  <_name>Fusion Icon</_name>
+  <_summary>Start and manage Compiz</_summary>
+  <description>
+    <_p>
+      This package provides a tray icon that allows you to easily enable,
+      disable and restart Compiz, and change the currently used window
+      manager and/or window decorator.
+    </_p>
+ </description>
+ <url type="homepage">https://github.com/compiz-reloaded/fusion-icon</url>
+</component>

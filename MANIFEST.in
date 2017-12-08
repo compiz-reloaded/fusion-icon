@@ -1,0 +1,12 @@
+include po/*
+include COPYING NEWS README.md VERSION
+include fusion-icon
+include fusion-icon.desktop.in fusion-icon.appdata.xml.in
+exclude fusion-icon.desktop fusion-icon.appdata.xml
+include FusionIcon/*.py
+include FusionIcon/interface_qt/__init__.py
+include FusionIcon/interface_qt/main.py.in
+include FusionIcon/interface_gtk/__init__.py
+include FusionIcon/interface_gtk/main.py.in
+include Makefile MANIFEST.in
+recursive-include images *
