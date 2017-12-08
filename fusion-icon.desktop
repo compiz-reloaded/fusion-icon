@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=Compiz Fusion Icon
+Name[ca]=Icona de Compiz Fusion
 Comment=Start and manage Compiz
+Comment[ca]=Inicieu i gestioneu Compiz
 Exec=fusion-icon
 Icon=fusion-icon
 Terminal=false
