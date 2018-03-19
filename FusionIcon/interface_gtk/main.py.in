@@ -18,19 +18,25 @@
 #
 # Original author: crdlb
 # GI port: kozec
-# AppIndicator port: XRevan86
+# AyatanaAppIndicator port: XRevan86
 # author: raveit65
 
 import os, time, gi
 try:
     gi.require_version('Gdk', '@gtkver@')
     gi.require_version('Gtk', '@gtkver@')
-    gi.require_version('AppIndicator@aiver@', '0.1')
+    try:
+        gi.require_version('AyatanaAppIndicator@aaiver@', '0.1')
+    except ValueError:
+        gi.require_version('AppIndicator@aaiver@', '0.1')
 except ValueError as e:
     # enable interface fallbacking (works only for ImportError)
     raise ImportError(e)
 from gi.repository import Gdk, Gtk
-from gi.repository import AppIndicator@aiver@ as AppIndicator
+try:
+    from gi.repository import AyatanaAppIndicator@aaiver@ as AyatanaAppIndicator
+except ImportError:
+    from gi.repository import AppIndicator@aaiver@ as AyatanaAppIndicator
 from FusionIcon.start import wms, apps, options, decorators, init
 
 class TrayMenu(Gtk.Menu):
@@ -104,7 +110,7 @@ class TrayMenu(Gtk.Menu):
 		self.action_item = Gtk.MenuItem()
 		self.action_item.connect('activate', self.show_menu_activate)
 		self.action_item.show()
-		# Fool libappindicator into thinking this is menu's child.
+		# Fool libayatana-appindicator into thinking this is menu's child.
 		self.action_item.set_parent(self)
 
 	def show_menu_activate(self, widget):
@@ -210,8 +216,9 @@ class CompizDecoratorMenu(Gtk.Menu):
 			self.append(item)
 			prev = item
 
-icon = AppIndicator.Indicator.new('Fusion Icon', 'fusion-icon', AppIndicator.IndicatorCategory.APPLICATION_STATUS)
-icon.set_status(AppIndicator.IndicatorStatus.ACTIVE)
+icon = AyatanaAppIndicator.Indicator.new('Fusion Icon', 'fusion-icon',
+                                         AyatanaAppIndicator.IndicatorCategory.APPLICATION_STATUS)
+icon.set_status(AyatanaAppIndicator.IndicatorStatus.ACTIVE)
 menu = TrayMenu()
 icon.set_menu(menu)
 icon.set_secondary_activate_target(menu.action_item)

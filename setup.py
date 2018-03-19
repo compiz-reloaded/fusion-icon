@@ -85,9 +85,9 @@ if sys.argv[1] == 'build':
 	f.close()
 	data = data.replace('@gtkver@', gtkver)
 	if gtkver == '2.0':
-		data = data.replace('@aiver@', '')
+		data = data.replace('@aaiver@', '')
 	else:
-		data = data.replace('@aiver@', '3')
+		data = data.replace('@aaiver@', '3')
 	f = open(os.path.join('FusionIcon/interface_gtk/main.py'), 'wt')
 	f.write(data)
 	f.close()
