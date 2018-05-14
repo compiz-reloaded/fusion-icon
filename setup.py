@@ -76,6 +76,10 @@ if sys.argv[1] == 'build':
 	data = f.read()
 	f.close()
 	data = data.replace('@qtver@', qtver.split('.')[0])
+	if int(qtver.split('.')[0]) >= 5:
+		data = data.replace('@pysidever@', "%d" % (int(qtver.split('.')[0]) - 3))
+	else:
+		data = data.replace('@pysidever@', '')
 	f = open(os.path.join('FusionIcon/interface_qt/main.py'), 'wt')
 	f.write(data)
 	f.close()
@@ -84,10 +88,10 @@ if sys.argv[1] == 'build':
 	data = f.read()
 	f.close()
 	data = data.replace('@gtkver@', gtkver)
-	if gtkver == '2.0':
-		data = data.replace('@aaiver@', '')
+	if int(gtkver.split('.')[0]) >= 3:
+		data = data.replace('@aaiver@', gtkver.split('.')[0])
 	else:
-		data = data.replace('@aaiver@', '3')
+		data = data.replace('@aaiver@', '')
 	f = open(os.path.join('FusionIcon/interface_gtk/main.py'), 'wt')
 	f.write(data)
 	f.close()

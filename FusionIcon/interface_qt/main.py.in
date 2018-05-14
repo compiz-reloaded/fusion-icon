@@ -17,13 +17,17 @@
 # Author(s): xsacha, XRevan86, raveit65
 
 import sys, os, time
-from PyQt@qtver@ import QtCore, QtGui
-if tuple(map(int, (QtCore.QT_VERSION_STR.split('.')))) < (4, 6, 0):
-	raise ImportError('Qt 4.6.x or later required')
 try:
-	from PyQt@qtver@ import QtWidgets
+	from PySide@pysidever@ import QtCore, QtGui, QtGui as QtWidgets
 except ImportError:
-	from PyQt@qtver@ import QtGui as QtWidgets
+	from PyQt@qtver@ import QtCore, QtGui, QtGui as QtWidgets
+if int(QtCore.qVersion().split('.')[0]) >= 5:
+	try:
+		from PySide@pysidever@ import QtWidgets
+	except ImportError:
+		from PyQt@qtver@ import QtWidgets
+elif tuple(map(int, (QtCore.qVersion().split('.')))) < (4, 6, 0):
+	raise ImportError('Qt 4.6.x or later required')
 from FusionIcon.start import wms, apps, options, decorators, init
 from FusionIcon.execute import run
 
@@ -45,7 +49,7 @@ class Build(QtWidgets.QApplication):
 		decorators.active = decorator
 
 	def __init__(self, parent=None):
-		QtCore.QObject.__init__(self, parent)
+		QtWidgets.QApplication.__init__(self, parent)
 		self.setApplicationName('Fusion Icon')
 		image = QtGui.QIcon()
 		for iconName in ('fusion-icon', 'image-missing'):
@@ -108,7 +112,7 @@ class Build(QtWidgets.QApplication):
 				rect = self.Tray.geometry()
 				pos = QtCore.QPoint(rect.left() + (rect.width() / 2),
 				                    rect.bottom() + 1)
-			elif int(QtCore.QT_VERSION_STR.split('.')[0]) >= 5:
+			elif int(QtCore.qVersion().split('.')[0]) >= 5:
 				# With SNI this will be used, unless Qt4 (sni-qt).
 				pos = QtGui.QCursor.pos()
 
