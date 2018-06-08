@@ -1,11 +1,11 @@
 # English (United Kingdom) translation for fusion-icon
-# Copyright (C) 2017 github.com/compiz-reloaded
+# Copyright (C) 2017 gitlab.com/compiz
 # This file is distributed under the same license as the fusion-icon package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fusion-icon\n"
-"Report-Msgid-Bugs-To: https://github.com/compiz-reloaded/fusion-icon/issues\n"
+"Report-Msgid-Bugs-To: https://gitlab.com/compiz/fusion-icon/issues\n"
 "POT-Creation-Date: 2017-12-08 15:59+0300\n"
 "PO-Revision-Date: 2017-12-08 15:59+0300\n"
 "Last-Translator: Alexei Sorokin <sor.alexei@meowr.ru>\n"

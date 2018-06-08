@@ -139,7 +139,7 @@ setup(
 	description='User-friendly tray icon for launching and managing Compiz',
 	author='Wolfgang Ulbrich',
 	author_email='chat-to-me@raveit.de',
-	url='https://github.com/compiz-reloaded/fusion-icon',
+	url='https://gitlab.com/compiz/fusion-icon',
 	packages=packages,
 	scripts=['fusion-icon'],
 	data_files=data_files,
