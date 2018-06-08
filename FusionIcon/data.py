@@ -73,8 +73,12 @@ wms = {
 		 'Mutter', 'gnome', None, None,),
 
 	'kwin':
-		('kde', ['kwin', '--replace'],
+		('kwin_x11', ['kwin_x11', '--replace'],
 		 'KWin', 'kde', None, None),
+
+	'kwin4':
+		('kwin', ['kwin', '--replace'],
+		 'KWin4', 'kde', None, None),
 
 	'xfwm4':
 		('xfwm4', ['xfwm4'],
