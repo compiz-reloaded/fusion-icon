@@ -174,7 +174,7 @@ class WindowManagers(dict):
 
 			kill_list = ['killall']
 			for decorator in decorators:
-				kill_list.append(decorators[decorator].base)
+				kill_list.append(decorators[decorator].proc)
 			run(kill_list, 'call')
 
 			time.sleep(0.5)
@@ -209,11 +209,12 @@ class CompizDecorator(object):
 		self.command = installed.decorators[name][1]
 		self.label = installed.decorators[name][2]
 		self.desktop = installed.decorators[name][3]
+		self.proc = installed.decorators[name][4]
 
 	def kill_others(self):
 		killall = ['killall']
 		for decorator in [x for x in self.decorators if x != self.name]:
-			killall.append(self.decorators[decorator].base)
+			killall.append(self.decorators[decorator].proc)
 		run(killall, 'call')
 
 class CompizDecorators(dict):
