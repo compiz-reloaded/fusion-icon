@@ -81,8 +81,8 @@ wms = {
 		 'KWin4', 'kde', None, None),
 
 	'xfwm4':
-		('xfwm4', ['xfwm4'],
-		 'Xfwm4', 'xfce', ['noreplace'], ['killall', 'xfwm4']),
+		('xfwm4', ['xfwm4', '--replace'],
+		 'Xfwm4', 'xfce', None, None),
 
 	'openbox':
 		('openbox', ['openbox', '--replace'],
