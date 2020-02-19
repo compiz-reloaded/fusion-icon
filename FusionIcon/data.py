@@ -104,16 +104,16 @@ wms = {
 
 #decorator
 #	base command, full command line,
-#	label, desktop environment
+#	label, desktop environment, proc name
 
 decorators = {
 	'emerald':
 		('emerald', 'emerald --replace',
-		 'Emerald', None),
+		 'Emerald', None, 'emerald'),
 
 	'gwd':
 		('gtk-window-decorator', 'gtk-window-decorator --replace',
-		 'GTK+ Window Decorator', 'mate'),
+		 'GTK+ Window Decorator', 'mate', 'gtk-window-deco'),
 }
 
 #option:
