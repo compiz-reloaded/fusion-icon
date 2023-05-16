@@ -161,7 +161,7 @@ class WindowManagers(dict):
 				time.sleep(1)
 
 		if self.active and self.old and 'noreplace' in self[self.active].flags:
-			run(['killall', self[self.old].base], 'call')
+			run(['pkill', self[self.old].base], 'call')
 			time.sleep(1)
 
 		if self.active == 'compiz':
@@ -172,9 +172,9 @@ class WindowManagers(dict):
 					if options[option].switch is not None:
 						compiz_command.append(options[option].switch)
 
-			kill_list = ['killall']
+			kill_list = ['pkill']
 			for decorator in decorators:
-				kill_list.append(decorators[decorator].base)
+				kill_list.append(decorators[decorator].proc)
 			run(kill_list, 'call')
 
 			time.sleep(0.5)
@@ -209,12 +209,13 @@ class CompizDecorator(object):
 		self.command = installed.decorators[name][1]
 		self.label = installed.decorators[name][2]
 		self.desktop = installed.decorators[name][3]
+		self.proc = installed.decorators[name][4]
 
 	def kill_others(self):
-		killall = ['killall']
+		pkill = ['pkill']
 		for decorator in [x for x in self.decorators if x != self.name]:
-			killall.append(self.decorators[decorator].base)
-		run(killall, 'call')
+			pkill.append(self.decorators[decorator].proc)
+		run(pkill, 'call')
 
 class CompizDecorators(dict):
 
